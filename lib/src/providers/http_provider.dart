@@ -136,12 +136,6 @@ class HttpProvider extends UrlBased implements Provider {
      * This does not persist over multiple requests.
      */
     void set data(dynamic data) => _data = data;
-//    void set data(dynamic data) {
-//        if (data != null && data is! String && data is! Blob && data is! Document && data is! FormData) {
-//            throw new ArgumentError('HTTP request data must be of type String|Blob|Document|FormData');
-//        }
-//        _data = data;
-//    }
 
     /**
      * Set a header.
@@ -242,7 +236,7 @@ class HttpProvider extends UrlBased implements Provider {
      *              - cancellation via .cancel()
      *              - progress listening via .onProgress()
      */
-    HttpFuture<HttpProviderResponse> put([String url, dyanmic data]) {
+    HttpFuture<HttpProviderResponse> put([String url, dynamic data]) {
         return _send('PUT', url, data);
     }
 
@@ -294,9 +288,15 @@ class HttpProvider extends UrlBased implements Provider {
             this.data = data;
         }
 
-        // URL is required
+        // URL is required.
         if (this.url == '' || this.url == null) {
             throw new StateError('HttpProvider cannot send ' + method + ' request without a URL.');
+        }
+
+        // Data must be a valid type.
+        if (this._data != null && this._data is! String && this._data is! Blob && this._data is! Document &&
+            this._data is! FormData) {
+            throw new ArgumentError('HTTP request data must be of type String|Blob|Document|FormData');
         }
 
         // HttpContext object for this request
@@ -364,7 +364,7 @@ class HttpProvider extends UrlBased implements Provider {
             // 2. Dispatch request
             httpReq = _dispatch(context);
             httpReq.onProgress.listen(onProgress.add);
-            return httpReq.onLoad.single.then(() {
+            return httpReq.onLoad.single.then((_) {
                 // Update context with response.
                 context.response = new _HttpProviderResponse(httpReq.response, httpReq.responseHeaders,
                                                              httpReq.responseType, httpReq.status, httpReq.statusText);
@@ -390,7 +390,7 @@ class HttpProvider extends UrlBased implements Provider {
 
             // 4. Return response and cleanup state
             _cleanup(context);
-            return Future.value(context.response);
+            return new Future.value(context.response);
         }).catchError((Error error) {
             // Check to see if the failure is retryable.
             if (_shouldRetryRequests && HttpProvider._isRetryable(context)) {
@@ -398,7 +398,7 @@ class HttpProvider extends UrlBased implements Provider {
                 return _retry(context).then((HttpProviderResponse response) {
                     // Retry eventually succeeded.
                     _cleanup(context);
-                    return Future.value(response);
+                    return new Future.value(response);
                 }).catchError((Error error) {
                     _cleanup(context);
                     return new Future.error(new HttpException.from(error, context.response));
@@ -431,7 +431,7 @@ class HttpProvider extends UrlBased implements Provider {
      * status code and response data.
      */
     static bool _isRetryable(HttpContext context) {
-        if (contex.response == null) {
+        if (context.response == null) {
             return false;
         }
         bool isPotentiallyTransientFailure = context.response.status == 500 || context.response.status == 502;
@@ -446,10 +446,10 @@ class HttpProvider extends UrlBased implements Provider {
         HttpProvider fork = this.fork();
         fork..data = context.request.data
             ..headers(context.request.headers)
-            ..meta(context.request.meta)
+            ..meta(context.meta)
             ..url = context.request.url;
 
-        Future<HttpContext> future;
+        Future<HttpProviderResponse> future;
 
         switch (context.request.method) {
             case 'GET':
@@ -469,7 +469,7 @@ class HttpProvider extends UrlBased implements Provider {
         future = future.then((HttpProviderResponse response) {
             // Retry eventually succeeded, update the response.
             context.response = response;
-            return Future.value(context);
+            return new Future.value(context);
         });
 
         return future;
@@ -483,7 +483,7 @@ class HttpProvider extends UrlBased implements Provider {
             context.meta['state'] = _States.complete;
         }
 
-        if (_contexts[context.id]) {
+        if (_contexts.containsKey(context.id)) {
             _contexts.remove(context.id);
         }
     }
@@ -493,16 +493,16 @@ class HttpProvider extends UrlBased implements Provider {
 class _HttpProviderRequest extends UrlBased implements HttpProviderRequest {
 
     dynamic data;
-
     Map<String, String> headers;
-
-    String _method;
-    String get method => _method;
-
+    String method;
     _OnCancel _onCancel;
 
-    _HttpProviderRequest(this._method, String url, this.data, this.headers, this._onCancel) {
+    _HttpProviderRequest(this.method, String url, this.data, this.headers, this._onCancel) {
         this.url = url;
+    }
+
+    void cancel([Error error]) {
+        _onCancel(error);
     }
 
 }

@@ -22,7 +22,7 @@ class InterceptorManager {
         _maxIncomingAttempts = _defaultMaxIncomingAttempts;
     }
 
-    void set maxIncomingAttempts(int max) => _maxIncomingAttempts = max;
+    void set maxIncomingAttempts(int max) { _maxIncomingAttempts = max; }
 
     Future<Context> interceptOutgoing(Context context) {
         // Apply each interceptor using a future chain.
@@ -72,16 +72,16 @@ class InterceptorManager {
         // Fail if number of attempts exceeds the maximum.
         if (_incomingAttempts[context.id] > _maxIncomingAttempts) {
             Exception exception = new Exception('Max number of attempts exceeded while intercepting incoming data.');
-            future = Future.error(exception);
-            interceptIncomingFinal(context, error);
+            future = new Future.error(exception);
+            interceptIncomingFinal(context, exception);
             return future;
         }
 
         // Apply each interceptor using a promise chain.
-        future = Future.value(context);
+        future = new Future.value(context);
         _provider.interceptors.forEach((Interceptor interceptor) {
             future = future.then((Context context) {
-                return interceptor.onIncoming(provider, context);
+                return interceptor.onIncoming(_provider, context);
             });
         });
 
@@ -97,7 +97,7 @@ class InterceptorManager {
 
     Future<Context> interceptIncomingRejected(Context context, Error error) {
         // Apply each rejected interceptor using a future chain.
-        Future<Context> future = Future.error(error);
+        Future<Context> future = new Future.error(error);
         _provider.interceptors.forEach((Interceptor interceptor) {
             // This chain is different in that a resolving promise will recover
             // from the error, whereas another error will be a continuation.
@@ -113,10 +113,10 @@ class InterceptorManager {
             return interceptIncomingStandard(context);
         });
 
-        return promise;
+        return future;
     }
 
-    void interceptIncomingFinal(Context context, [Error error]) {
+    void interceptIncomingFinal(Context context, [Object error]) {
         // Cleanup state
         if (_incomingAttempts.containsKey(context.id)) {
             _incomingAttempts.remove(context.id);
