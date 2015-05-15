@@ -562,6 +562,14 @@ void main() {
             .toString()
             .contains('attempts exceeded while intercepting'), isTrue);
       });
+
+      test(
+          'should throw if max number of interceptor chain cycle attempts set to 0 or less',
+          () {
+        expect(() {
+          manager.maxIncomingInterceptorAttempts = 0;
+        }, throwsArgumentError);
+      });
     });
   });
 }

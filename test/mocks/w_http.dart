@@ -7,7 +7,7 @@ import 'package:w_transport/w_http.dart';
 
 class MockWHttp implements WHttp {
   StreamController<MockWRequest> _requestStreamController =
-  new StreamController<MockWRequest>();
+      new StreamController<MockWRequest>();
   Stream<MockWRequest> get requests => _requestStreamController.stream;
   WRequest newRequest() {
     MockWRequest req = new MockWRequest();

@@ -10,7 +10,9 @@ import '../interceptor.dart';
 import '../provider.dart';
 
 class CsrfInterceptor extends Interceptor {
-  CsrfInterceptor({String header: 'x-xsrf-token'}) : super('csrf', 'CSRF'), _header = header;
+  CsrfInterceptor({String header: 'x-xsrf-token'})
+      : super('csrf', 'CSRF'),
+        _header = header;
 
   String token = '';
 
@@ -32,7 +34,8 @@ class CsrfInterceptor extends Interceptor {
     return context;
   }
 
-  Future<Context> onIncomingRejected(Provider provider, Context context, Object error) async {
+  Future<Context> onIncomingRejected(
+      Provider provider, Context context, Object error) async {
     // Retrieve next token from response headers.
     if (context is HttpContext) {
       _updateToken(context.response);

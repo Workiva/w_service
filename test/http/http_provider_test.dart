@@ -9,7 +9,6 @@ import 'package:w_service/w_service.dart';
 import '../mocks/interceptors.dart';
 import '../mocks/w_http.dart';
 
-
 void main() {
   group('HttpProvider', () {
     HttpProvider provider;
@@ -71,7 +70,7 @@ void main() {
           requestContexts.add(request.context);
           request.complete();
         });
-        interceptor.incoming.listen((RequestCompleter request){
+        interceptor.incoming.listen((RequestCompleter request) {
           request.complete();
         });
         provider.use(interceptor);
@@ -81,7 +80,8 @@ void main() {
       test('should be set on the HttpContext, available to interceptors',
           () async {
         await provider.get();
-        expect(requestContexts.single.meta['custom-prop'], equals('custom-value'));
+        expect(
+            requestContexts.single.meta['custom-prop'], equals('custom-value'));
       });
 
       test('should not persist over multiple requests', () async {

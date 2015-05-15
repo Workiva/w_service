@@ -9,8 +9,11 @@ import '../interceptor.dart';
 import '../provider.dart';
 
 class TimeoutInterceptor extends Interceptor {
-  TimeoutInterceptor({Duration maxRequestDuration}) : super('timeout', 'Timeout') {
-    _maxRequestDuration = maxRequestDuration != null ? maxRequestDuration : new Duration(seconds: 15);
+  TimeoutInterceptor({Duration maxRequestDuration})
+      : super('timeout', 'Timeout') {
+    _maxRequestDuration = maxRequestDuration != null
+        ? maxRequestDuration
+        : new Duration(seconds: 15);
   }
 
   Duration _maxRequestDuration;
@@ -25,7 +28,8 @@ class TimeoutInterceptor extends Interceptor {
         context.request.abort();
         _clearTimer(context);
         // TODO: this will throw in a random async zone.. how will that look?
-        throw new Exception('Timeout threshold of ${_maxRequestDuration.inSeconds.toString()} seconds exceeded.');
+        throw new Exception(
+            'Timeout threshold of ${_maxRequestDuration.inSeconds.toString()} seconds exceeded.');
       });
     }
     return context;

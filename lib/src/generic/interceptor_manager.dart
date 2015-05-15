@@ -20,8 +20,8 @@ class InterceptorManager {
   /// Get and set the maximum number of cycles/attempts to allow
   /// when trying to complete the incoming interceptor chain.
   void set maxIncomingInterceptorAttempts(int max) {
-    if (max <
-        0) throw new ArgumentError('Maximum interceptor attempts must be >= 0');
+    if (max <=
+        0) throw new ArgumentError('Maximum interceptor attempts must be > 0');
     _maxIncomingInterceptorAttempts = max;
   }
   int get maxIncomingInterceptorAttempts => _maxIncomingInterceptorAttempts;
