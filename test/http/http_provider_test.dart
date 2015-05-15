@@ -1,45 +1,14 @@
 library w_service.test.providers.http_provider_test;
 
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:w_service/w_service.dart';
-import 'package:w_transport/w_http.dart';
 
-class MockWHttp implements WHttp {
-  StreamController<MockWRequest> _requestStreamController =
-      new StreamController<MockWRequest>();
-  Stream<MockWRequest> get requests => _requestStreamController.stream;
-  WRequest newRequest() {
-    MockWRequest req = new MockWRequest();
-    _requestStreamController.add(req);
-    return req;
-  }
-  void close() {
-    _requestStreamController.close();
-  }
-}
+import '../mocks/interceptors.dart';
+import '../mocks/w_http.dart';
 
-class MockWRequest extends Mock implements WRequest {}
-
-class RequestContext {
-  HttpProvider provider;
-  HttpContext context;
-  dynamic error;
-  RequestContext(this.provider, this.context, this.error);
-}
-
-class TestInfoInterceptor extends Interceptor {
-  TestInfoInterceptor(this._onRequest) : super('test-info');
-  Function _onRequest;
-
-  onOutgoing(HttpProvider provider, HttpContext context) async {
-    _onRequest(new RequestContext(provider, context, null));
-    return context;
-  }
-}
 
 void main() {
   group('HttpProvider', () {
@@ -92,26 +61,33 @@ void main() {
     });
 
     group('request meta', () {
-      List<RequestContext> requestContexts;
+      ControlledTestInterceptor interceptor;
+      List<HttpContext> requestContexts;
 
       setUp(() {
+        interceptor = new ControlledTestInterceptor();
         requestContexts = [];
-        provider.use(new TestInfoInterceptor(requestContexts.add));
+        interceptor.outgoing.listen((RequestCompleter request) {
+          requestContexts.add(request.context);
+          request.complete();
+        });
+        interceptor.incoming.listen((RequestCompleter request){
+          request.complete();
+        });
+        provider.use(interceptor);
         provider.meta = {'custom-prop': 'custom-value'};
       });
 
       test('should be set on the HttpContext, available to interceptors',
           () async {
         await provider.get();
-        expect(requestContexts.single.context.meta['custom-prop'],
-            equals('custom-value'));
+        expect(requestContexts.single.meta['custom-prop'], equals('custom-value'));
       });
 
       test('should not persist over multiple requests', () async {
         await provider.get();
         await provider.get();
-        expect(requestContexts.last.context.meta.containsKey('custom-prop'),
-            isFalse);
+        expect(requestContexts.last.meta.containsKey('custom-prop'), isFalse);
       });
     });
 
@@ -153,10 +129,10 @@ void main() {
       });
 
       test('should share the same interceptors', () {
-        provider.use(new TestInfoInterceptor((_) {}));
+        provider.use(new SimpleTestInterceptor());
         HttpProvider fork = provider.fork();
         expect(fork.interceptors.single, equals(provider.interceptors.single));
-        fork.use(new TestInfoInterceptor((_) {}));
+        fork.use(new SimpleTestInterceptor());
         expect(fork.interceptors.last != provider.interceptors.single, isTrue);
       });
     });
