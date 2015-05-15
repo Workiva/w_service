@@ -7,15 +7,10 @@ import 'provider.dart';
 
 abstract class Interceptor {
   /// Construct a new [Interceptor] instance.
-  Interceptor(String id, [String name])
-      : this.id = id,
-        this.name = name != null ? name : id;
+  Interceptor(String id, [String name]) : this.id = id;
 
   /// Unique identifier.
   final String id;
-
-  /// Readable identifier.
-  final String name;
 
   Future<Context> onOutgoing(Provider provider, Context context) async {
     return context;

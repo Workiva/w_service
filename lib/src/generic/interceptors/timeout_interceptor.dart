@@ -1,12 +1,12 @@
-library w_service.src.generic.timeout_interceptor;
+library w_service.src.generic.interceptors.timeout_interceptor;
 
 import 'dart:async';
 
-import '../http/http_context.dart';
-import '../http/http_provider.dart';
-import 'context.dart';
-import 'interceptor.dart';
-import 'provider.dart';
+import '../../http/http_context.dart';
+import '../../http/http_provider.dart';
+import '../context.dart';
+import '../interceptor.dart';
+import '../provider.dart';
 
 class TimeoutInterceptor extends Interceptor {
   TimeoutInterceptor({Duration maxRequestDuration}) : super('timeout', 'Timeout') {

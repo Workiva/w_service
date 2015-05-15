@@ -1,13 +1,13 @@
-library w_service.src.generic.csrf_interceptor;
+library w_service.src.generic.interceptors.csrf_interceptor;
 
 import 'dart:async';
 
 import 'package:w_transport/w_http.dart';
 
-import '../http/http_context.dart';
-import 'context.dart';
-import 'interceptor.dart';
-import 'provider.dart';
+import '../../http/http_context.dart';
+import '../context.dart';
+import '../interceptor.dart';
+import '../provider.dart';
 
 class CsrfInterceptor extends Interceptor {
   CsrfInterceptor({String header: 'x-xsrf-token'}) : super('csrf', 'CSRF'), _header = header;

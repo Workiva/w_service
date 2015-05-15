@@ -1,12 +1,12 @@
-library w_service.src.generic.json_interceptor;
+library w_service.src.generic.interceptors.json_interceptor;
 
 import 'dart:async';
 import 'dart:convert';
 
-import '../http/http_context.dart';
-import 'context.dart';
-import 'interceptor.dart';
-import 'provider.dart';
+import '../../http/http_context.dart';
+import '../context.dart';
+import '../interceptor.dart';
+import '../provider.dart';
 
 class JsonInterceptor extends Interceptor {
   JsonInterceptor() : super('json', 'JSON');
