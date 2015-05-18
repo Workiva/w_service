@@ -9,7 +9,7 @@ import '../interceptor.dart';
 import '../provider.dart';
 
 class JsonInterceptor extends Interceptor {
-  JsonInterceptor() : super('json', 'JSON');
+  JsonInterceptor() : super('json');
 
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (context is HttpContext) {

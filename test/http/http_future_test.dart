@@ -1,4 +1,4 @@
-library w_service.test.providers.http_provider_test;
+library w_service.test.http.http_future_test;
 
 import 'dart:async';
 

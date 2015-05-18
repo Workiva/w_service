@@ -1,4 +1,4 @@
-library w_service.test.providers.http_provider_test;
+library w_service.test.http.http_provider_test;
 
 import 'dart:convert';
 
@@ -8,15 +8,17 @@ import 'package:w_service/w_service.dart';
 
 import '../mocks/interceptors.dart';
 import '../mocks/w_http.dart';
+import '../utils.dart';
 
 void main() {
   group('HttpProvider', () {
+    MockWHttp mockHttp;
     HttpProvider provider;
     List<MockWRequest> requests;
 
     setUp(() {
       requests = [];
-      MockWHttp mockHttp = new MockWHttp();
+      mockHttp = new MockWHttp();
       mockHttp.requests.listen(requests.add);
       provider = new HttpProvider(http: mockHttp);
       provider.uri = Uri.parse('example.com');
@@ -88,6 +90,11 @@ void main() {
         await provider.get();
         await provider.get();
         expect(requestContexts.last.meta.containsKey('custom-prop'), isFalse);
+      });
+
+      test('should be set to empty map if set to null', () {
+        provider.meta = null;
+        expect(provider.meta, equals({}));
       });
     });
 
@@ -249,6 +256,381 @@ void main() {
       await provider.get(uri);
       verify(requests.single.uri = uri);
       expect(provider.uri.toString() != uri.toString(), isTrue);
+    });
+
+    test('should throw if request fails', () async {
+      mockHttp.autoFlush = false;
+      Exception failed = new Exception('Failed');
+      mockHttp.requests.listen((MockWRequest request) {
+        request.completeError(failed);
+      });
+      Exception exception = await expectThrowsAsync(() async {
+        await provider.get();
+      });
+      expect(exception, equals(failed));
+    });
+
+    group('request cancellation', () {
+      test('should handle immediate cancellation', () async {
+        Exception cancellation = new Exception('Cancelled.');
+        Exception exception = await expectThrowsAsync(() async {
+          HttpFuture request = provider.get();
+          request.abort(cancellation);
+          await request;
+        });
+        expect(exception, equals(cancellation));
+      });
+
+      test('should handle cancellation after request has been sent', () async {
+        Exception cancellation = new Exception('Cancelled.');
+        MockWRequest wTransportRequest;
+        Exception exception = await expectThrowsAsync(() async {
+          HttpFuture request = provider.get();
+          wTransportRequest = await mockHttp.requests.first;
+          request.abort(cancellation);
+          await request;
+        });
+        expect(exception, equals(cancellation));
+        verify(wTransportRequest.abort()).called(1);
+      });
+
+      test('should handle cancellation after response has been received',
+          () async {
+        HttpFuture request = provider.get();
+        await request;
+        request.abort(new Exception('Cancelled.'));
+      });
+    });
+
+    group('request retrying', () {
+      test('should not retry if auto retrying is disabled', () async {
+        mockHttp.autoFlush = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          request.completeError(new Exception('Failed.'));
+        });
+        Exception exception = await expectThrowsAsync(() async {
+          await provider.get();
+        });
+        expect(exception.toString().contains('Failed.'), isTrue);
+        expect(requests.length, equals(1));
+      });
+
+      test('should not retry if request succeeds', () async {
+        provider.autoRetry();
+        await provider.get();
+        expect(requests.length, equals(1));
+      });
+
+      test('should disable retrying if max retries is set to 0', () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry()
+          ..autoRetry(retries: 0)
+          ..retryWhen((_) => true);
+
+        Exception failed = new Exception('Failed.');
+        mockHttp.requests.listen((MockWRequest request) {
+          request.completeError(failed);
+        });
+
+        Exception exception = await expectThrowsAsync(() async {
+          await provider.get();
+        });
+        expect(exception, equals(failed));
+        expect(requests.length, equals(1));
+      });
+
+      test('should retry a failed request', () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry()
+          ..retryWhen((_) => true);
+
+        bool failed = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          if (!failed) {
+            failed = true;
+            request.completeError(new Exception('Failed.'));
+          } else {
+            request.complete();
+          }
+        });
+
+        await provider.get();
+        expect(requests.length, equals(2));
+      });
+
+      test('should only retry requests that meet the retryable criteria',
+          () async {});
+
+      test('should fail after exceeding maximum retry attempts', () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry(retries: 3)
+          ..retryWhen((_) => true);
+
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          request.completeError(new Exception('Failed.'));
+        });
+
+        Exception exception = await expectThrowsAsync(() async {
+          await provider.get();
+        });
+        expect(exception is MaxRetryAttemptsExceeded, isTrue);
+        expect(requests.length, equals(4)); // original + 3 retries = 4
+      });
+
+      test('retryable criteria should support async function', () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry()
+          ..retryWhen((_) async => true);
+
+        bool failed = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          if (!failed) {
+            failed = true;
+            request.completeError(new Exception('Failed.'));
+          } else {
+            request.complete();
+          }
+        });
+
+        await provider.get();
+        expect(requests.length, equals(2));
+      });
+
+      test(
+          'should throw an ArgumentError if attempting to retry an invalid method',
+          () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry()
+          ..retryWhen((_) => true);
+
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('INVALID');
+          when(request.uri).thenReturn(provider.uri);
+          request.completeError(new Exception('Failed.'));
+        });
+
+        Error error = await expectThrowsAsync(() async {
+          await provider.get();
+        });
+        expect(error is ArgumentError, isTrue);
+      });
+
+      group('methods', () {
+        setUp(() {
+          mockHttp.autoFlush = false;
+
+          provider
+            ..autoRetry()
+            ..retryWhen((_) async => true);
+
+          bool failed = false;
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.data).thenReturn(null);
+            when(request.headers).thenReturn(provider.headers);
+            when(request.uri).thenReturn(provider.uri);
+            if (!failed) {
+              failed = true;
+              request.completeError(new Exception('Failed.'));
+            } else {
+              request.complete();
+            }
+          });
+        });
+
+        test('DELETE', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('DELETE');
+          });
+          await provider.delete();
+          expect(requests.length, equals(2));
+        });
+
+        test('GET', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('GET');
+          });
+          await provider.get();
+          expect(requests.length, equals(2));
+        });
+
+        test('HEAD', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('HEAD');
+          });
+          await provider.head();
+          expect(requests.length, equals(2));
+        });
+
+        test('OPTIONS', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('OPTIONS');
+          });
+          await provider.options();
+          expect(requests.length, equals(2));
+        });
+
+        test('PATCH', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('PATCH');
+          });
+          await provider.patch();
+          expect(requests.length, equals(2));
+        });
+
+        test('POST', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('POST');
+          });
+          await provider.post();
+          expect(requests.length, equals(2));
+        });
+
+        test('PUT', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('PUT');
+          });
+          await provider.put();
+          expect(requests.length, equals(2));
+        });
+
+        test('TRACE', () async {
+          mockHttp.requests.listen((MockWRequest request) {
+            when(request.method).thenReturn('TRACE');
+          });
+          await provider.trace();
+          expect(requests.length, equals(2));
+        });
+      });
+
+      test('MaxRetryAttemptsExceeded should list errors from each attempt',
+          () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry(retries: 2)
+          ..retryWhen((_) => true);
+
+        int failedCount = 0;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          request.completeError(new Exception('Failed ${++failedCount}.'));
+        });
+
+        MaxRetryAttemptsExceeded exception = await expectThrowsAsync(() async {
+          await provider.get();
+        });
+        expect(exception.message.contains('Failed 1'), isTrue);
+        expect(exception.message.contains('Failed 2'), isTrue);
+      });
+
+      test('should retry 500 errors by default', () async {
+        mockHttp.autoFlush = false;
+        provider.autoRetry();
+        provider.use(new CustomTestInterceptor(
+            onIncoming: (HttpProvider provider, HttpContext context) {
+          if (context.response.status >= 200 &&
+              context.response.status < 300) return context;
+          throw new Exception(
+              'Request failed: ${context.response.status} ${context.response.statusText}');
+        }));
+
+        bool failed = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          MockWResponse response = new MockWResponse();
+          if (!failed) {
+            failed = true;
+            when(response.status).thenReturn(500);
+          } else {
+            when(response.status).thenReturn(200);
+          }
+          request.complete(response);
+        });
+
+        await provider.get();
+        expect(requests.length, equals(2));
+      });
+
+      test('should retry 502 errors by default', () async {
+        mockHttp.autoFlush = false;
+        provider.autoRetry();
+        provider.use(new CustomTestInterceptor(
+            onIncoming: (HttpProvider provider, HttpContext context) {
+          if (context.response.status >= 200 &&
+              context.response.status < 300) return context;
+          throw new Exception(
+              'Request failed: ${context.response.status} ${context.response.statusText}');
+        }));
+
+        bool failed = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          MockWResponse response = new MockWResponse();
+          if (!failed) {
+            failed = true;
+            when(response.status).thenReturn(502);
+          } else {
+            when(response.status).thenReturn(200);
+          }
+          request.complete(response);
+        });
+
+        await provider.get();
+        expect(requests.length, equals(2));
+      });
+
+      test(
+          'should retry errors that have the `retryable` meta flag set to true',
+          () async {
+        mockHttp.autoFlush = false;
+        provider
+          ..autoRetry()
+          ..meta['retryable'] = true;
+
+        bool failed = false;
+        mockHttp.requests.listen((MockWRequest request) {
+          when(request.data).thenReturn(null);
+          when(request.headers).thenReturn(provider.headers);
+          when(request.method).thenReturn('GET');
+          when(request.uri).thenReturn(provider.uri);
+          if (!failed) {
+            failed = true;
+            request.completeError(new Exception('Failed.'));
+          } else {
+            request.complete();
+          }
+        });
+
+        await provider.get();
+        expect(requests.length, equals(2));
+      });
     });
   });
 }

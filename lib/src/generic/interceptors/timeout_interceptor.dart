@@ -9,27 +9,24 @@ import '../interceptor.dart';
 import '../provider.dart';
 
 class TimeoutInterceptor extends Interceptor {
-  TimeoutInterceptor({Duration maxRequestDuration})
-      : super('timeout', 'Timeout') {
-    _maxRequestDuration = maxRequestDuration != null
+  TimeoutInterceptor({Duration maxRequestDuration}) : super('timeout') {
+    this._maxRequestDuration = maxRequestDuration != null
         ? maxRequestDuration
         : new Duration(seconds: 15);
   }
 
+  Duration get maxRequestDuration => _maxRequestDuration;
   Duration _maxRequestDuration;
 
   Map<String, Timer> _timers = {};
 
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (provider is HttpProvider && context is HttpContext) {
-      _timers[context.id] = new Timer(_maxRequestDuration, () {
+      _timers[context.id] = new Timer(maxRequestDuration, () {
         context.meta['retryable'] = true;
-        // TODO: provider won't know about this cancellation
-        context.request.abort();
+        context.request.abort(new Exception(
+            'Timeout threshold of ${maxRequestDuration.inSeconds.toString()} seconds exceeded.'));
         _clearTimer(context);
-        // TODO: this will throw in a random async zone.. how will that look?
-        throw new Exception(
-            'Timeout threshold of ${_maxRequestDuration.inSeconds.toString()} seconds exceeded.');
       });
     }
     return context;

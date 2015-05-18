@@ -7,7 +7,7 @@ import 'provider.dart';
 
 abstract class Interceptor {
   /// Construct a new [Interceptor] instance.
-  Interceptor(String id, [String name]) : this.id = id;
+  Interceptor(String id) : this.id = id;
 
   /// Unique identifier.
   final String id;

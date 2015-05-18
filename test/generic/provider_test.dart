@@ -1,4 +1,4 @@
-library w_service.test.providers.provider_test;
+library w_service.test.generic.provider_test;
 
 import 'package:test/test.dart';
 import 'package:w_service/w_service.dart';

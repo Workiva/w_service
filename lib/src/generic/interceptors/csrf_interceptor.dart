@@ -11,7 +11,7 @@ import '../provider.dart';
 
 class CsrfInterceptor extends Interceptor {
   CsrfInterceptor({String header: 'x-xsrf-token'})
-      : super('csrf', 'CSRF'),
+      : super('csrf'),
         _header = header;
 
   String token = '';

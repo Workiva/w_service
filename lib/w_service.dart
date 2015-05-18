@@ -3,7 +3,8 @@ library w_service;
 // Generic classes.
 export 'src/generic/context.dart' show Context;
 export 'src/generic/interceptor.dart' show Interceptor;
-export 'src/generic/interceptor_manager.dart' show InterceptorManager;
+export 'src/generic/interceptor_manager.dart'
+    show InterceptorManager, MaxInterceptorAttemptsExceeded;
 export 'src/generic/provider.dart' show Provider;
 
 // Interceptors.
@@ -15,8 +16,9 @@ export 'src/generic/interceptors/timeout_interceptor.dart'
 // HTTP.
 export 'src/http/http_context.dart' show HttpContext;
 export 'src/http/http_future.dart' show HttpFuture;
-export 'src/http/http_provider.dart' show HttpProvider;
+export 'src/http/http_provider.dart'
+    show HttpProvider, MaxRetryAttemptsExceeded;
 
 // Exceptions.
 export 'src/generic/interceptor_manager.dart'
-    show MaxInterceptorAttemptsExceededException;
+    show MaxInterceptorAttemptsExceeded;

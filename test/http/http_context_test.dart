@@ -1,4 +1,4 @@
-library w_service.test.providers.http_context_test;
+library w_service.test.http.http_context_test;
 
 import 'package:test/test.dart';
 import 'package:w_service/src/http/http_context.dart';
