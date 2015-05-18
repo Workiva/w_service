@@ -1,19 +1,22 @@
 library w_service;
 
-import 'dart:async';
-import 'dart:convert';
-import 'dart:html';
+// Generic classes.
+export 'src/generic/context.dart' show Context;
+export 'src/generic/interceptor.dart' show Interceptor;
+export 'src/generic/interceptor_manager.dart' show InterceptorManager;
+export 'src/generic/provider.dart' show Provider;
 
-part 'src/interfaces.dart';
-part 'src/async/http_future.dart';
-part 'src/contexts/context.dart';
-part 'src/contexts/http_context.dart';
-part 'src/errors/http_exception.dart';
-part 'src/interceptors/base_interceptor.dart';
-part 'src/interceptors/http_csrf_interceptor.dart';
-part 'src/interceptors/http_json_interceptor.dart';
-part 'src/interceptors/http_status_code_interceptor.dart';
-part 'src/interceptors/http_subsession_interceptor.dart';
-part 'src/managers/interceptor_manager.dart';
-part 'src/misc/url_based.dart';
-part 'src/providers/http_provider.dart';
+// Interceptors.
+export 'src/generic/interceptors/csrf_interceptor.dart' show CsrfInterceptor;
+export 'src/generic/interceptors/json_interceptor.dart' show JsonInterceptor;
+export 'src/generic/interceptors/timeout_interceptor.dart'
+    show TimeoutInterceptor;
+
+// HTTP.
+export 'src/http/http_context.dart' show HttpContext;
+export 'src/http/http_future.dart' show HttpFuture;
+export 'src/http/http_provider.dart' show HttpProvider;
+
+// Exceptions.
+export 'src/generic/interceptor_manager.dart'
+    show MaxInterceptorAttemptsExceededException;
