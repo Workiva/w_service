@@ -1,4 +1,4 @@
-library w_service.src.contexts.http_context;
+library w_service.src.http.http_context;
 
 import 'package:w_transport/w_http.dart';
 

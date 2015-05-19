@@ -41,19 +41,12 @@ class InterceptorManager {
     }
   }
 
-  Future<Context> interceptIncoming(Provider provider, Context context,
-      [error]) async {
+  Future<Context> interceptIncoming(Provider provider, Context context) async {
     // Keep track of the number of attempts in the incoming interceptor chain.
     _incomingTries[context.id] = 0;
 
     try {
-      if (error == null) {
-        // No error, so start with the standard incoming interceptors.
-        context = await interceptIncomingStandard(provider, context);
-      } else {
-        // Error, start with the incoming rejected interceptors.
-        context = await interceptIncomingRejected(provider, context, error);
-      }
+      context = await interceptIncomingStandard(provider, context);
 
       // All interceptors resolved, meaning a stable, finalized state has been reached.
       interceptIncomingFinal(provider, context);
@@ -71,7 +64,7 @@ class InterceptorManager {
 
     // Fail if number of tries exceeds the maximum.
     if (_incomingTries[context.id] >
-        maxIncomingInterceptorAttempts) throw new MaxInterceptorAttemptsExceededException(
+        maxIncomingInterceptorAttempts) throw new MaxInterceptorAttemptsExceeded(
             '${maxIncomingInterceptorAttempts} attempts exceeded while intercepting incoming data.');
 
     // Apply each interceptor in order.
@@ -117,8 +110,8 @@ class InterceptorManager {
   }
 }
 
-class MaxInterceptorAttemptsExceededException implements Exception {
-  MaxInterceptorAttemptsExceededException(this.message);
+class MaxInterceptorAttemptsExceeded implements Exception {
+  MaxInterceptorAttemptsExceeded(this.message);
   final String message;
   String toString() => message;
 }

@@ -8,22 +8,9 @@ import 'package:w_service/w_service.dart';
 
 import '../mocks/contexts.dart';
 import '../mocks/interceptors.dart';
+import '../utils.dart';
 
 class TestProvider extends Provider {}
-
-Future<Object> expectThrowsAsync(Future f(), [Matcher throwsMatcher]) async {
-  var exception;
-  try {
-    await f();
-  } catch (e) {
-    exception = e;
-  }
-  expect(exception, isNotNull);
-  if (throwsMatcher != null) {
-    expect(exception, throwsMatcher);
-  }
-  return exception;
-}
 
 void main() {
   group('InterceptorManager', () {
