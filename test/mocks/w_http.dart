@@ -3,7 +3,7 @@ library w_service.test.mocks.w_http;
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:w_transport/w_http.dart';
+import 'package:w_transport/w_transport.dart';
 
 class MockWHttp implements WHttp {
   MockWHttp({bool autoFlush: true}) : super() {

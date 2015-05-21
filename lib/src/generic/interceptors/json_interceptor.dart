@@ -8,9 +8,29 @@ import '../context.dart';
 import '../interceptor.dart';
 import '../provider.dart';
 
+/// An interceptor that handles encoding and decoding of data
+/// payloads on outgoing and incoming message, respectively.
+///
+/// This interceptor is designed for HTTP requests and only has an
+/// effect when used with the [HttpProvider].
+///
+/// On outgoing messages, this interceptor will try to to encode
+/// the data into a JSON string. This should work for simple data
+/// structures like Maps or Lists and primitives. If the encoding
+/// fails, the error will be swallowed and the data will be left
+/// unmodified.
+///
+/// On incoming messages, this interceptor will try to read the
+/// message data as a string and decode the string into a Map or List.
+/// If the decoding fails, the error will be swallowed and teh data
+/// will be let unmodified.
 class JsonInterceptor extends Interceptor {
+  /// Construct a new [JsonInterceptor] instance.
   JsonInterceptor() : super('json');
 
+  /// Intercepts an outgoing request and attempts to encode the data
+  /// to a JSON string.
+  @override
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (context is HttpContext) {
       context.request.headers['Content-Type'] = 'application/json';
@@ -23,6 +43,9 @@ class JsonInterceptor extends Interceptor {
     return context;
   }
 
+  /// Intercepts an incoming response and attempts to decode the data
+  /// to a Map or List.
+  @override
   Future<Context> onIncoming(Provider provider, Context context) async {
     if (context is HttpContext) {
       try {
