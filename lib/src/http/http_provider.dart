@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:fluri/fluri.dart';
-import 'package:w_transport/w_http.dart';
+import 'package:w_transport/w_transport.dart';
 
 import '../generic/interceptor_manager.dart';
 import '../generic/provider.dart';
@@ -20,7 +20,15 @@ const int _defaultMaxRetryAttempts = 3;
 
 enum States { cancelled, complete, pending, sent }
 
-/// TODO
+/// A provider that sends messages over HTTP using
+/// [w_transport](https://github.com/Workiva/w_transport)'s
+/// `WHttp`.
+///
+/// Supports persistent request headers, request cancellation,
+/// upload/download progress monitoring, request retrying,
+/// and anything that
+/// /// [w_transport](https://github.com/Workiva/w_transport)'s
+/// requests support.
 class HttpProvider extends Provider with FluriMixin {
   /// Construct a new [HttpProvider] instance.
   HttpProvider({WHttp http, InterceptorManager interceptorManager})
@@ -114,8 +122,6 @@ class HttpProvider extends Provider with FluriMixin {
   /// Fork this [HttpProvider] instance. The returned fork
   /// will have the same URI, headers, and will share the
   /// same interceptors.
-  ///
-  /// This is useful for...
   HttpProvider fork() {
     HttpProvider fork = new HttpProvider(
         http: _http, interceptorManager: _interceptorManager)
@@ -366,6 +372,9 @@ class HttpProvider extends Provider with FluriMixin {
   }
 }
 
+/// Exception that occurs when a request sent via an
+/// [HttpProvider] instance fails to complete successfully
+/// in the maximum allowed number of retry attempts.
 class MaxRetryAttemptsExceeded implements Exception {
   MaxRetryAttemptsExceeded(this._message, [List errors])
       : this.errors = errors != null ? errors : [];

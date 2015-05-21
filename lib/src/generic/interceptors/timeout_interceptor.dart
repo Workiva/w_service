@@ -8,18 +8,40 @@ import '../context.dart';
 import '../interceptor.dart';
 import '../provider.dart';
 
+/// An interceptor that sets a timer for each outgoing request
+/// and cancels the request if it does not complete within a
+/// specified duration.
+///
+/// This interceptor is designed for HTTP requests and only has an
+/// effect when used with the [HttpProvider].
 class TimeoutInterceptor extends Interceptor {
+  /// Construct a new [TimeoutInterceptor] instance.
+  ///
+  /// By default, the maximum request duration is 15 seconds.
+  ///
+  /// To override this, specify a duration upon construction:
+  ///
+  ///     var timeoutInterceptor =
+  ///         new TimeoutInterceptor(maxRequestDuration: new Duration(seconds: 30));
   TimeoutInterceptor({Duration maxRequestDuration}) : super('timeout') {
     this._maxRequestDuration = maxRequestDuration != null
         ? maxRequestDuration
         : new Duration(seconds: 15);
   }
 
+  /// Maximum request duration. If any request exceeds this duration
+  /// before completing, it will be cancelled.
   Duration get maxRequestDuration => _maxRequestDuration;
   Duration _maxRequestDuration;
 
+  /// Map of timers for outstanding requests.
   Map<String, Timer> _timers = {};
 
+  /// Intercepts and starts a timer for an outgoing request.
+  ///
+  /// If the request does not complete before the max request
+  /// duration is exceeded, it will be cancelled.
+  @override
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (provider is HttpProvider && context is HttpContext) {
       _timers[context.id] = new Timer(maxRequestDuration, () {
@@ -32,16 +54,21 @@ class TimeoutInterceptor extends Interceptor {
     return context;
   }
 
+  /// Clears the timer for a request that was cancelled (was never dispatched).
+  @override
   void onOutgoingCancelled(Provider provider, Context context, Object error) {
     // Cancel the timer - request failed to send.
     _clearTimer(context);
   }
 
+  /// Clears the timer for a request that completed (successfully or not).
+  @override
   void onIncomingFinal(Context context, Object error) {
     // Cancel the timer - request finished.
     _clearTimer(context);
   }
 
+  /// Clears the timer for a request.
   void _clearTimer(Context context) {
     if (_timers.containsKey(context.id)) {
       _timers[context.id].cancel();
