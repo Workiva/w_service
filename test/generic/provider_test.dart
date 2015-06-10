@@ -3,7 +3,9 @@ library w_service.test.generic.provider_test;
 import 'package:test/test.dart';
 import 'package:w_service/w_service.dart';
 
-class TestProvider extends Provider {}
+class TestProvider extends Provider {
+  TestProvider() : super('test-provider');
+}
 class TestInterceptor extends Interceptor {
   TestInterceptor() : super('test-interceptor');
 }

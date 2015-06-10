@@ -29,3 +29,29 @@ Creating a service API often starts out with a simple interface between client a
 This is accomplished through the use of **Providers**, **Interceptors**, and an **InterceptorManager**.
 
 For more detailed information on these concepts, check out the [w_service wiki](https://github.com/Workiva/w_service/wiki).
+
+<br>
+
+
+## Platform Agnostic
+The main library (`w_service/w_service.dart`) is built on [w_transport](https://github.com/Workiva/w_transport) (also platform-agnostic) and depends on neither `dart:html` nor `dart:io`, making it platform agnostic. This means you can use the `w_service` library to build components, libraries, or APIs that will be reusable in the browser AND on the server.
+
+The end consumer will make the decision between client and server, most likely in a main() block.
+
+## Usage in the Browser
+```dart
+import 'package:w_service/w_service_client.dart' show configureWServiceForBrowser;
+
+void main() {
+  configureWServiceForBrowser();
+}
+```
+
+## Usage on the Server
+```dart
+import 'package:w_service/w_service_server.dart' show configureWServiceForServer;
+
+void main() {
+  configureWServiceForServer();
+}
+```

@@ -18,7 +18,16 @@ typedef WRequest WRequestFactory();
 /// is enabled).
 const int _defaultMaxRetryAttempts = 3;
 
+/// Counter used to create unique default IDs for HttpProviders.
+int _httpProviderCount = 0;
+
+/// Possible states for every HTTP request, used by [HttpProvider].
 enum States { cancelled, complete, pending, sent }
+
+/// Generate a unique ID for the next [HttpProvider].
+String _nextHttpProviderId() {
+  return 'http-provider-${_httpProviderCount++}';
+}
 
 /// A provider that sends messages over HTTP using
 /// [w_transport](https://github.com/Workiva/w_transport)'s
@@ -31,8 +40,8 @@ enum States { cancelled, complete, pending, sent }
 /// requests support.
 class HttpProvider extends Provider with FluriMixin {
   /// Construct a new [HttpProvider] instance.
-  HttpProvider({WHttp http, InterceptorManager interceptorManager})
-      : super(),
+  HttpProvider({String id, WHttp http, InterceptorManager interceptorManager})
+      : super(id != null ? id : _nextHttpProviderId()),
         _http = http != null ? http : new WHttp(),
         _interceptorManager = interceptorManager != null
             ? interceptorManager
@@ -41,10 +50,9 @@ class HttpProvider extends Provider with FluriMixin {
   /// Request headers to send on every request.
   Map<String, String> headers = {};
 
-  /// Set the data to send on the next request.
+  /// Gets and sets the data to send on the next request.
   /// This does not persist over multiple requests.
-  void set data(Object data) {}
-  Object get data => null;
+  Object data;
 
   /// Encoding to use on the request data.
   Encoding encoding = UTF8;
@@ -103,22 +111,6 @@ class HttpProvider extends Provider with FluriMixin {
     }
   }
 
-  /// Set a test function that determines whether or not a failed
-  /// request should be retried.
-  ///
-  ///     HttpProvider provider = new HttpProvider()
-  ///       ..autoRetry()
-  ///       ..retryWhen((HttpContext context) => context.response.status == 500);
-  ///
-  /// By default, the following criteria is used:
-  ///
-  ///     (HttpContext context)
-  ///         => (context.meta.containsKey('retryable') && context.meta['retryable'])
-  ///            || (context.response != null && [500, 502].contains(context.response.status));
-  void retryWhen(test(HttpContext context)) {
-    _retryWhen = test;
-  }
-
   /// Fork this [HttpProvider] instance. The returned fork
   /// will have the same URI, headers, and will share the
   /// same interceptors.
@@ -134,6 +126,22 @@ class HttpProvider extends Provider with FluriMixin {
       fork.retryWhen(_retryWhen);
     }
     return fork;
+  }
+
+  /// Set a test function that determines whether or not a failed
+  /// request should be retried.
+  ///
+  ///     HttpProvider provider = new HttpProvider()
+  ///       ..autoRetry()
+  ///       ..retryWhen((HttpContext context) => context.response.status == 500);
+  ///
+  /// By default, the following criteria is used:
+  ///
+  ///     (HttpContext context)
+  ///         => (context.meta.containsKey('retryable') && context.meta['retryable'])
+  ///            || (context.response != null && [500, 502].contains(context.response.status));
+  void retryWhen(test(HttpContext context)) {
+    _retryWhen = test;
   }
 
   /// Sends a DELETE request to the given [uri].
@@ -192,12 +200,14 @@ class HttpProvider extends Provider with FluriMixin {
     _contexts[context.id] = context;
     context.meta = this.meta;
     context.meta['state'] = States.pending;
+    context.meta['method'] = method;
 
     context.request = _http.newRequest()
       ..uri = Uri.parse(reqUri.toString())
-      ..data = data != null ? data : this.data
       ..encoding = this.encoding
-      ..headers = this.headers;
+      ..headers = new Map.from(this.headers);
+
+    context.request.data = data != null ? data : this.data;;
 
     if (this.withCredentials) {
       context.request.withCredentials = true;
@@ -215,14 +225,15 @@ class HttpProvider extends Provider with FluriMixin {
 
     this.data = null;
     this.meta = {};
-    this.query = '';
-    this.fragment = '';
+    this.query = null;
+    this.fragment = null;
 
     void abort([error]) {
       context.meta['state'] = States.cancelled;
       this._cancellations[context.id] = error;
-      context.request.abort();
+      context.request.abort(error);
     }
+    context.abort = abort;
 
     // Bail if the request has exceeded the maximum number of attempts.
     if (isRetryable && context.meta['attempts'] >= _maxRetryAttempts) {
@@ -255,12 +266,6 @@ class HttpProvider extends Provider with FluriMixin {
         throw error;
       }
     }).catchError((error) async {
-      // Exceeded maximum retry attempts.
-      _cleanup(context);
-      throw error;
-    }, test: (error) => error is MaxRetryAttemptsExceeded)
-        .catchError((error) async {
-      // Unexpected error.
       _cleanup(context);
       throw error;
     }).then((HttpContext context) async => context.response);
@@ -304,10 +309,18 @@ class HttpProvider extends Provider with FluriMixin {
     context.meta['state'] = States.sent;
 
     // Receive response.
-    context.response = await request;
+    Object error;
+    try {
+      context.response = await request;
+    } on WHttpException catch (e) {
+      context.response = e.response;
+      error = e;
+    }
+
+    _checkForCancellation(context);
 
     // Apply incoming interceptors.
-    context = await _interceptorManager.interceptIncoming(this, context);
+    context = await _interceptorManager.interceptIncoming(this, context, error);
 
     _cleanup(context);
     return context;
@@ -316,6 +329,7 @@ class HttpProvider extends Provider with FluriMixin {
   void _checkForCancellation(HttpContext context) {
     if (context.meta['state'] == States.cancelled) {
       Object error = _cancellations[context.id];
+      _interceptorManager.interceptOutgoingCancelled(this, context, error);
       _cleanup(context);
       throw error;
     }

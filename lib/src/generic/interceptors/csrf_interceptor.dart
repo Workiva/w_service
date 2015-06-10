@@ -72,7 +72,10 @@ class CsrfInterceptor extends Interceptor {
 
   /// Update the CSRF token from a response if one is available.
   _updateToken(WResponse response) {
-    if (response.headers.containsKey(_header)) {
+    if (response == null) return;
+    if (response.headers.containsKey(_header) &&
+        response.headers[_header] != null &&
+        response.headers[_header] != '') {
       token = response.headers[_header];
     }
   }

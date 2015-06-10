@@ -1,0 +1,18 @@
+.controls {
+    /*background-color: #555;*/
+    color: #333;
+    margin: 10px 0 20px;
+    padding: 15px;
+}
+
+.controls .form-group {
+    margin-right: 20px;
+}
+
+.controls .form-group label {
+    margin-right: 10px;
+}
+
+.controls .form-group label:after {
+    content: ':';
+}

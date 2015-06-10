@@ -51,13 +51,13 @@ void main() {
 
       test('should be set on the underlying WRequest', () async {
         await provider.get();
-        verify(requests.single.data = provider.data);
+        verify(requests.single.data = 'data');
       });
 
       test('should not persist over multiple requests', () async {
         await provider.get();
         await provider.get();
-        verify(requests.last.data = null);
+        expect(requests.last.data, isNull);
       });
     });
 

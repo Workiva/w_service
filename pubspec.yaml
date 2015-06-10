@@ -2,7 +2,11 @@ name: w_service
 version: 0.0.0
 dependencies:
   fluri: '>=1.0.0 <2.0.0'
-  w_transport: '>=1.0.0 <2.0.0'
+  w_transport:
+    git:
+      url: git+ssh://git@github.com/Workiva/w_transport.git
+      ref: data-validate
+#  w_transport: '>=1.0.0 <2.0.0'
 dev_dependencies:
   browser: '>=0.10.0+2 <0.11.0'
   coverage:
@@ -15,4 +19,5 @@ dev_dependencies:
       ref: 0.3.0
   dart_style: '>=0.1.8 <0.2.0'
   mockito: '>=0.10.0 <0.11.0'
+  react: '>=0.7.0 <0.8.0'
   test: '>=0.12.0 <0.13.0'

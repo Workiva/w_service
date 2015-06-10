@@ -10,7 +10,9 @@ import '../mocks/contexts.dart';
 import '../mocks/interceptors.dart';
 import '../utils.dart';
 
-class TestProvider extends Provider {}
+class TestProvider extends Provider {
+  TestProvider() : super('test-provider');
+}
 
 void main() {
   group('InterceptorManager', () {
