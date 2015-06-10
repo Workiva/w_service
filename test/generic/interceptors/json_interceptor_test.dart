@@ -33,10 +33,10 @@ void main() {
         provider = new HttpProvider(http: new MockWHttp());
       });
 
-      test('should set the Content-Type header to application/json', () async {
+      test('should set the content-type header to application/json', () async {
         expect(
             await interceptor.onOutgoing(provider, context), equals(context));
-        expect(headers['Content-Type'], equals('application/json'));
+        expect(headers['content-type'], equals('application/json'));
       });
 
       test('should encode request data', () async {
@@ -77,6 +77,23 @@ void main() {
         expect(
             await interceptor.onIncoming(provider, context), equals(context));
         verifyNever(context.response.update(captureAny));
+      });
+
+      test('should not overwrite the content-type header', () async {
+        headers['content-type'] = 'text/plain';
+        expect(await interceptor.onOutgoing(provider, context), equals(context));
+        expect(context.request.headers['content-type'], equals('text/plain'));
+      });
+
+      test('should not try to encode the data if the content-type header has already been set', () async {
+        headers['content-type'] = 'text/plain';
+        Map data = {
+          'name': 'Supported Transports',
+          'items': ['HTTP', 'WebSocket']
+        };
+        when(context.request.data).thenReturn(data);
+        expect(await interceptor.onOutgoing(provider, context), equals(context));
+        verifyNever(context.request.data = JSON.encode(data));
       });
     });
   });
