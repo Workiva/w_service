@@ -69,7 +69,7 @@ class CustomTestInterceptor extends Interceptor {
       onOutgoingCancelled(Provider provider, Context context, Object error),
       onIncoming(Provider provider, Context context),
       onIncomingRejected(Provider provider, Context context, Object error),
-      onIncomingFinal(Context context, Object error)})
+      onIncomingFinal(Provider provider, Context context, Object error)})
       : super('custom-test-interceptor${_customIntCount++}'),
         _onOutgoing = onOutgoing,
         _onOutgoingCancelled = onOutgoingCancelled,
@@ -113,11 +113,11 @@ class CustomTestInterceptor extends Interceptor {
     return super.onIncomingRejected(provider, context, error);
   }
 
-  void onIncomingFinal(Context context, Object error) {
+  void onIncomingFinal(Provider provider, Context context, Object error) {
     if (_onIncomingFinal != null) {
       _onIncomingFinal(context, error);
     } else {
-      super.onIncomingFinal(context, error);
+      super.onIncomingFinal(provider, context, error);
     }
   }
 }

@@ -461,9 +461,9 @@ void main() {
 
         await manager.interceptIncoming(provider, context);
 
-        verify(mockRejectOnce.onIncomingFinal(context, null)).called(1);
-        verify(mockSecond.onIncomingFinal(context, null)).called(1);
-        verify(mockRecoverer.onIncomingFinal(context, null)).called(1);
+        verify(mockRejectOnce.onIncomingFinal(provider, context, null)).called(1);
+        verify(mockSecond.onIncomingFinal(provider, context, null)).called(1);
+        verify(mockRecoverer.onIncomingFinal(provider, context, null)).called(1);
       });
 
       test(
@@ -497,9 +497,9 @@ void main() {
           await manager.interceptIncoming(provider, context);
         });
 
-        verify(mockRejector.onIncomingFinal(context, exception)).called(1);
-        verify(mockSecond.onIncomingFinal(context, exception)).called(1);
-        verify(mockRecoverOnce.onIncomingFinal(context, exception)).called(1);
+        verify(mockRejector.onIncomingFinal(provider, context, exception)).called(1);
+        verify(mockSecond.onIncomingFinal(provider, context, exception)).called(1);
+        verify(mockRecoverOnce.onIncomingFinal(provider, context, exception)).called(1);
       });
 
       test('should not allow the interceptor chain cycle to exceed 10 attempts',

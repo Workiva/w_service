@@ -35,6 +35,8 @@ class ControlledWRequest extends Mock implements WRequest {
 
   bool autoFlush;
 
+  Map headers = {};
+
   Completer _ready = new Completer();
 
   Future _mockDispatch() {
