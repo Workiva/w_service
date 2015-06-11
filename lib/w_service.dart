@@ -4,6 +4,8 @@
 library w_service;
 
 // TODO: Fix relative imports to use package syntax
+// w_transport classes.
+export 'package:w_transport/w_transport.dart' show WRequest, WResponse;
 
 // Generic classes.
 export 'src/generic/context.dart' show Context;
