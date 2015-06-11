@@ -2,7 +2,7 @@ library w_service.src.http.http_future;
 
 import 'dart:async';
 
-import 'package:w_transport/w_http.dart';
+import 'package:w_transport/w_transport.dart';
 
 /// Creates a new [HttpFuture] instance.
 HttpFuture httpFutureFactory(Future future, onAbort([error]),
@@ -12,15 +12,17 @@ HttpFuture httpFutureFactory(Future future, onAbort([error]),
 
 /// Augmented [Future] that represents the status of an HTTP request.
 ///
-/// The request can be aborted and the upload & download
+/// The request can be cancelled and the upload & download
 /// progress can be monitored from an [HttpFuture] instance.
 class HttpFuture<T> implements Future<T> {
   HttpFuture._fromFuture(
       this._future, this._onAbort, this.uploadProgress, this.downloadProgress);
 
+  /// [w_transport](https://github.com/Workiva/w_transport)
   /// [WProgress] stream for this HTTP request's download.
   final Stream<WProgress> downloadProgress;
 
+  /// [w_transport](https://github.com/Workiva/w_transport)
   /// [WProgress] stream for this HTTP request's upload.
   final Stream<WProgress> uploadProgress;
 
@@ -30,7 +32,8 @@ class HttpFuture<T> implements Future<T> {
   /// Handler for when [abort] is called.
   Function _onAbort;
 
-  /// Cancel this request. If the request has already finished, this will do nothing.
+  /// Cancel this request. If the request has already finished,
+  /// this will do nothing.
   void abort([error]) {
     _onAbort(error);
   }
