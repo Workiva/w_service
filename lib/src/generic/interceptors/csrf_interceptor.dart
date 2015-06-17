@@ -58,7 +58,7 @@ class CsrfInterceptor extends Interceptor {
   }
 
   /// Intercepts an incoming failed response and checks the headers
-  /// for an updated CSRF token. If found, the updated toekn is stored
+  /// for an updated CSRF token. If found, the updated token is stored
   /// for use on all future requests.
   @override
   Future<Context> onIncomingRejected(

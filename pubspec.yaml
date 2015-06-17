@@ -5,7 +5,7 @@ dependencies:
   w_transport:
     git:
       url: git+ssh://git@github.com/Workiva/w_transport.git
-      ref: data-validate
+      ref: master
 #  w_transport: '>=1.0.0 <2.0.0'
 dev_dependencies:
   browser: '>=0.10.0+2 <0.11.0'

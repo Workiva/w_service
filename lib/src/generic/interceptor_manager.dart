@@ -176,7 +176,7 @@ class InterceptorManager {
 }
 
 /// Exception that occurs when an [InterceptorManager] fails
-/// reach a finalized state while intercepting an incoming
+/// to reach a finalized state while intercepting an incoming
 /// message. This occurs when an interceptor chain repeatedly
 /// rejects, and then recovers, an incoming message.
 ///

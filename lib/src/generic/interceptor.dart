@@ -9,7 +9,7 @@ import 'provider.dart';
 /// Purposes include message preparation, data transformation,
 /// traffic shaping, and error handling.
 ///
-/// An [Interceptor] is used by a [Provider], and a [Provider]s
+/// An [Interceptor] is used by a [Provider], and a [Provider]
 /// can have multiple [Interceptor]s. [Provider]s use the
 /// [InterceptorManager] to apply these [Interceptor]s to every
 /// message.
@@ -41,7 +41,7 @@ abstract class Interceptor {
   /// Construct a new [Interceptor] instance.
   ///
   /// The [id] should be unique among all interceptors.
-  /// If appropriate, use an namespace prefix.
+  /// If appropriate, use a namespace prefix.
   Interceptor(String id) : this.id = id;
 
   /// Unique identifier.
@@ -166,7 +166,7 @@ abstract class Interceptor {
   ///     }
   ///
   /// By default, this rethrows the error so the message remains
-  /// it same rejected state.
+  /// in the same rejected state.
   Future<Context> onIncomingRejected(
       Provider provider, Context context, Object error) async {
     throw error;
