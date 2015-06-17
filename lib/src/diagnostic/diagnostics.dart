@@ -50,8 +50,6 @@ class Diagnostics {
   Stream<List<ProviderDiagnostics>> _providerDiagnosticsStream;
 
   void advance(Context context) {
-    print('advancing');
-    print(_pending);
     _pending[context].complete();
   }
 

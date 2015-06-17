@@ -29,9 +29,7 @@ class DiagnosticInterceptor extends Interceptor {
     }
 
     if (diagnostics.shouldControlFor(provider)) {
-      print('awaiting control');
       await diagnostics.control(context);
-      print('control gained');
     }
 
     context = await interceptor.onOutgoing(provider, context);

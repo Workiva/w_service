@@ -16,30 +16,22 @@ Diagnostics _diagnostics = new Diagnostics();
 bool _enabled = false;
 
 void enableDiagnostics() {
-  if (_enabled) {
-    print('[diagnostics] already enabled');
-    return;
-  }
+  if (_enabled) return;
 
   react_client.setClientConfiguration();
   document.body.append(new DivElement()..id = 'w-service-diagnostics');
   var diagnosticPanel = DiagnosticPanel({'diagnostics': _diagnostics});
   react.render(diagnosticPanel, querySelector('#w-service-diagnostics'));
   _enabled = true;
-  print('[diagnostics] enabled');
 }
 
 void disableDiagnostics() {
-  if (!_enabled) {
-    print('[diagnostics] already disabled');
-    return;
-  }
+  if (!_enabled) return;
 
   Element container = querySelector('#w-service-diagnostics');
   react.unmountComponentAtNode(container);
   container.remove();
   _enabled = false;
-  print('[diagnostics] disabled');
 }
 
 void watch(Provider provider) {
