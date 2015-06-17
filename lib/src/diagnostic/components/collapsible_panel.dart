@@ -4,22 +4,15 @@ import 'package:react/react.dart' as react;
 
 var CollapsiblePanel = react.registerComponent(() => new _CollapsiblePanel());
 class _CollapsiblePanel extends react.Component {
-
   get children => props['children'];
   get expanded => state['expanded'];
   get header => props['header'];
   String get className => props['className'];
   get title => props['title'];
 
-  getDefaultProps() => {
-    'header': '',
-    'className': '',
-    'title': ''
-  };
+  getDefaultProps() => {'header': '', 'className': '', 'title': ''};
 
-  getInitialState() => {
-    'expanded': false
-  };
+  getInitialState() => {'expanded': false};
 
   render() {
     var panelClassStr = 'wsdp-panel';
@@ -31,7 +24,10 @@ class _CollapsiblePanel extends react.Component {
     }
     return react.div({'className': panelClassStr}, [
       react.div({'className': 'wsdp-panel-header'}, [
-        react.a({'className': 'wsdp-panel-header-title', 'onClick': _togglePanel}, react.strong({}, title)),
+        react.a({
+          'className': 'wsdp-panel-header-title',
+          'onClick': _togglePanel
+        }, react.strong({}, title)),
         react.div({'className': 'wsdp-panel-header-content'}, header)
       ]),
       react.div({'className': 'wsdp-panel-content'}, [

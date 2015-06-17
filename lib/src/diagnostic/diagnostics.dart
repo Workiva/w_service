@@ -2,8 +2,10 @@ library w_service.src.diagnostic.diagnostics;
 
 import 'dart:async';
 
-import 'package:w_service/src/diagnostic/diagnostic_stats.dart' show HttpStats, WebSocketStats;
-import 'package:w_service/src/diagnostic/provider_diagnostics.dart' show ProviderDiagnostics;
+import 'package:w_service/src/diagnostic/diagnostic_stats.dart'
+    show HttpStats, WebSocketStats;
+import 'package:w_service/src/diagnostic/provider_diagnostics.dart'
+    show ProviderDiagnostics;
 import 'package:w_service/w_service.dart';
 
 class Diagnostics {
@@ -11,7 +13,8 @@ class Diagnostics {
     messageMap = new MessageMap();
 
     _providerDiagnosticsStreamController = new StreamController();
-    _providerDiagnosticsStream = _providerDiagnosticsStreamController.stream.asBroadcastStream();
+    _providerDiagnosticsStream =
+        _providerDiagnosticsStreamController.stream.asBroadcastStream();
   }
 
   HttpStats get httpStats {
@@ -30,7 +33,8 @@ class Diagnostics {
 
   Map<Provider, ProviderDiagnostics> providerDiagnostics = {};
 
-  Stream<List<ProviderDiagnostics>> get providerDiagnosticsStream => _providerDiagnosticsStream;
+  Stream<List<ProviderDiagnostics>> get providerDiagnosticsStream =>
+      _providerDiagnosticsStream;
 
   WebSocketStats get webSocketStats {
     WebSocketStats stats = new WebSocketStats();
@@ -107,12 +111,12 @@ class Diagnostics {
   }
 
   void _updateProviderDiagnosticsStream() {
-    _providerDiagnosticsStreamController.add(providerDiagnostics.values.toList());
+    _providerDiagnosticsStreamController
+        .add(providerDiagnostics.values.toList());
   }
 }
 
 class MessageMap {
-
   MessageMap() {
     _streamController = new StreamController();
     _stream = _streamController.stream.asBroadcastStream();
@@ -122,7 +126,8 @@ class MessageMap {
 
   List<Context> detailed = [];
 
-  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages = {};
+  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages =
+      {};
 
   List<Context> pending = [];
 
@@ -160,11 +165,13 @@ class MessageMap {
     _updateStream();
   }
 
-  List<Context> messagesAt(Provider provider, Interceptor interceptor, String step) {
+  List<Context> messagesAt(
+      Provider provider, Interceptor interceptor, String step) {
     return messages[provider][interceptor][step].values.toList();
   }
 
-  void update(Provider provider, Interceptor interceptor, Context context,  String step) {
+  void update(Provider provider, Interceptor interceptor, Context context,
+      String step) {
     if (_locations.containsKey(context)) {
       // Updating a previously added message
       _Location loc = _locations[context];

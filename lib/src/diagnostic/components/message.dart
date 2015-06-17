@@ -5,7 +5,6 @@ import 'package:w_service/w_service.dart';
 
 var Message = react.registerComponent(() => new _Message());
 class _Message extends react.Component {
-
   Context get context => this.props['context'];
   bool get controllable => this.props['controllable'];
   bool get detailed => this.props['detailed'];
@@ -14,8 +13,9 @@ class _Message extends react.Component {
   /// These should only be used when dealing with an HttpContext instance.
 
   HttpContext get httpContext => context as HttpContext;
-  String get httpMethod =>
-  httpContext.request.method != null ? httpContext.request.method : httpContext.meta['method'];
+  String get httpMethod => httpContext.request.method != null
+      ? httpContext.request.method
+      : httpContext.meta['method'];
   String get httpPath {
     var path = httpContext.request.uri.path;
     return path != null && path != '' ? path : '/';
@@ -34,9 +34,7 @@ class _Message extends react.Component {
     'onExpand': (_) {}
   };
 
-  getInitialState() => {
-    'httpResponseData': null
-  };
+  getInitialState() => {'httpResponseData': null};
 
   render() {
     if (context == null) return react.div({});
@@ -72,7 +70,8 @@ class _Message extends react.Component {
     var statusText = '...';
     if (httpContext.response != null) {
       statusText = httpContext.response.status.toString();
-      if (httpContext.response.status >= 200 && httpContext.response.status < 300) {
+      if (httpContext.response.status >= 200 &&
+          httpContext.response.status < 300) {
         statusClass += ' wsdp-success';
       } else {
         statusClass += ' wsdp-failure';
@@ -90,13 +89,18 @@ class _Message extends react.Component {
   _renderHttpMessage() {
     var title = [];
     if (controllable) {
-      title.add(react.a({'className': 'wsdp-message-advance', 'onClick': _advanceMessage, 'dangerouslySetInnerHTML': {'__html': '&rarr;'}}));
+      title.add(react.a({
+        'className': 'wsdp-message-advance',
+        'onClick': _advanceMessage,
+        'dangerouslySetInnerHTML': {'__html': '&rarr;'}
+      }));
     }
     title.addAll([
       _renderHttpStatus(),
       react.div({'className': 'wsdp-message-method'}, httpMethod),
       react.div({'className': 'wsdp-message-path'}, httpPath),
-      react.a({'className': 'wsdp-message-expand', 'onClick': _expandMessage}, '+')
+      react.a(
+          {'className': 'wsdp-message-expand', 'onClick': _expandMessage}, '+')
     ]);
     return react.div({'className': 'wsdp-message'}, title);
   }
@@ -106,27 +110,37 @@ class _Message extends react.Component {
     var uri = httpContext.request.uri.toString();
 
     var requestHeaders = httpContext.request.headers.toString();
-    var requestBody = httpContext.request.data != null ? httpContext.request.data.toString() : '';
+    var requestBody = httpContext.request.data != null
+        ? httpContext.request.data.toString()
+        : '';
 
-    var responseHeaders = httpContext.response != null ? httpContext.response.headers.toString() : '';
+    var responseHeaders = httpContext.response != null
+        ? httpContext.response.headers.toString()
+        : '';
     var responseBody = httpResponseData != null
         ? [react.a({'onClick': _loadResponseData}, 'reload'), httpResponseData]
         : react.a({'onClick': _loadResponseData}, 'load');
 
-    var error = httpContext.meta['error'] != null ? httpContext.meta['error'].toString() : '';
+    var error = httpContext.meta['error'] != null
+        ? httpContext.meta['error'].toString()
+        : '';
 
     var title = [
       _renderHttpStatus(),
       react.div({'className': 'wsdp-message-method'}, httpMethod),
       react.div({'className': 'wsdp-message-path'}, httpPath),
-      react.a({'className': 'wsdp-message-close', 'onClick': _closeMessage, 'dangerouslySetInnerHTML': {'__html': '&times;'}})
+      react.a({
+        'className': 'wsdp-message-close',
+        'onClick': _closeMessage,
+        'dangerouslySetInnerHTML': {'__html': '&times;'}
+      })
     ];
 
     return react.div({'className': 'wsdp-message-detailed'}, [
       react.div({'className': 'wsdp-message-detailed-title'}, title),
-      react.div({'className': 'wsdp-message-detailed-content'},
-      react.table({},
-      react.tbody({}, [
+      react.div({
+        'className': 'wsdp-message-detailed-content'
+      }, react.table({}, react.tbody({}, [
         react.tr({}, [react.td({}, 'provider:'), react.td({}, providerId)]),
         react.tr({}, [react.td({}, 'uri:'), react.td({}, uri)]),
         react.tr({}, react.td({}, react.strong({}, 'request'))),
@@ -136,9 +150,7 @@ class _Message extends react.Component {
         react.tr({}, [react.td({}, 'headers:'), react.td({}, responseHeaders)]),
         react.tr({}, [react.td({}, 'body:'), react.td({}, responseBody)]),
         react.tr({}, [react.td({}, 'error:'), react.td({}, error)])
-      ])
-      )
-      )
+      ])))
     ]);
   }
 }

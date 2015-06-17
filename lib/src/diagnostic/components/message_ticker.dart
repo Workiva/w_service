@@ -14,7 +14,8 @@ class _MessageTicker extends react.Component {
 
   render() {
     var msgs = messages.map((message) {
-      return react.li({}, Message({'context': message, 'onExpand': onExpandMessage}));
+      return react.li(
+          {}, Message({'context': message, 'onExpand': onExpandMessage}));
     });
     return react.div({'className': 'wsdp-message-ticker'}, [
       react.div({'className': 'fadeout'}),

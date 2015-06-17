@@ -207,7 +207,8 @@ class HttpProvider extends Provider with FluriMixin {
       ..encoding = this.encoding
       ..headers = new Map.from(this.headers);
 
-    context.request.data = data != null ? data : this.data;;
+    context.request.data = data != null ? data : this.data;
+    ;
 
     if (this.withCredentials) {
       context.request.withCredentials = true;

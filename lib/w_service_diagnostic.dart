@@ -8,8 +8,7 @@ import 'package:w_service/w_service.dart';
 
 import 'package:w_service/src/diagnostic/components/diagnostic_panel.dart'
     show DiagnosticPanel;
-import 'package:w_service/src/diagnostic/diagnostics.dart'
-    show Diagnostics;
+import 'package:w_service/src/diagnostic/diagnostics.dart' show Diagnostics;
 
 Diagnostics _diagnostics = new Diagnostics();
 
@@ -24,9 +23,7 @@ void enableDiagnostics() {
 
   react_client.setClientConfiguration();
   document.body.append(new DivElement()..id = 'w-service-diagnostics');
-  var diagnosticPanel = DiagnosticPanel({
-    'diagnostics': _diagnostics
-  });
+  var diagnosticPanel = DiagnosticPanel({'diagnostics': _diagnostics});
   react.render(diagnosticPanel, querySelector('#w-service-diagnostics'));
   _enabled = true;
   print('[diagnostics] enabled');

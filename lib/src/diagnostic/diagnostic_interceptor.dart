@@ -6,8 +6,8 @@ import 'package:w_service/src/diagnostic/diagnostics.dart' show Diagnostics;
 import 'package:w_service/w_service.dart';
 
 class DiagnosticInterceptor extends Interceptor {
-  DiagnosticInterceptor(String id, Interceptor this.interceptor,
-                        Diagnostics this.diagnostics)
+  DiagnosticInterceptor(
+      String id, Interceptor this.interceptor, Diagnostics this.diagnostics)
       : super(id);
 
   Diagnostics diagnostics;
@@ -21,7 +21,8 @@ class DiagnosticInterceptor extends Interceptor {
     if (isFirst) {
       context.meta['providerId'] = provider.id;
       if (context is HttpContext) {
-        if (context.meta.containsKey('attempts') && context.meta['attempts'] > 0) {
+        if (context.meta.containsKey('attempts') &&
+            context.meta['attempts'] > 0) {
           diagnostics.providerDiagnostics[provider].httpStats.retries++;
         }
       }

@@ -3,7 +3,8 @@ library w_service.src.diagnostic.diagnosticController;
 import 'package:w_service/src/diagnostic/diagnostics.dart' show Diagnostics;
 import 'package:w_service/src/diagnostic/diagnostic_interceptor.dart'
     show DiagnosticInterceptor;
-import 'package:w_service/src/diagnostic/diagnostic_stats.dart' show HttpStats, WebSocketStats;
+import 'package:w_service/src/diagnostic/diagnostic_stats.dart'
+    show HttpStats, WebSocketStats;
 import 'package:w_service/w_service.dart';
 
 class ProviderDiagnostics {
