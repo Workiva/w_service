@@ -5,7 +5,7 @@ import 'package:w_transport/w_transport.dart';
 import '../generic/context.dart';
 
 int _count = 0;
-const String _idPrefix = 'HttpContext';
+const String _idPrefix = 'http-context-';
 
 /// Creates a new [HttpContext] instance.
 /// This is used internally but is not exported,
@@ -23,6 +23,9 @@ class HttpContext extends Context {
   /// The [request] and [response] properties should be
   /// populated as they become available.
   HttpContext._() : super('$_idPrefix${_count++}');
+
+  // TODO: this is a stop-gap, will be replaced by a real method.
+  var abort;
 
   /// [w_transport](https://github.com/Workiva/w_transport)
   /// WRequest object used to send the HTTP request.

@@ -46,7 +46,7 @@ class TimeoutInterceptor extends Interceptor {
     if (provider is HttpProvider && context is HttpContext) {
       _timers[context.id] = new Timer(maxRequestDuration, () {
         context.meta['retryable'] = true;
-        context.request.abort(new Exception(
+        context.abort(new Exception(
             'Timeout threshold of ${maxRequestDuration.inSeconds.toString()} seconds exceeded.'));
         _clearTimer(context);
       });
@@ -63,7 +63,7 @@ class TimeoutInterceptor extends Interceptor {
 
   /// Clears the timer for a request that completed (successfully or not).
   @override
-  void onIncomingFinal(Context context, Object error) {
+  void onIncomingFinal(Provider provider, Context context, Object error) {
     // Cancel the timer - request finished.
     _clearTimer(context);
   }

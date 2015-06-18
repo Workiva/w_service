@@ -52,10 +52,15 @@ class InterceptorManager {
       }
       return context;
     } catch (error) {
-      for (int i = 0; i < provider.interceptors.length; i++) {
-        provider.interceptors[i].onOutgoingCancelled(provider, context, error);
-      }
+      interceptOutgoingCancelled(provider, context, error);
       throw error;
+    }
+  }
+
+  void interceptOutgoingCancelled(
+      Provider provider, Context context, Object error) {
+    for (int i = 0; i < provider.interceptors.length; i++) {
+      provider.interceptors[i].onOutgoingCancelled(provider, context, error);
     }
   }
 
@@ -69,12 +74,17 @@ class InterceptorManager {
   /// Returns a Future that will complete with an error
   /// if one of the interceptors threw an error that could
   /// not be recovered from.
-  Future<Context> interceptIncoming(Provider provider, Context context) async {
+  Future<Context> interceptIncoming(Provider provider, Context context,
+      [Object error]) async {
     // Keep track of the number of attempts in the incoming interceptor chain.
     _incomingTries[context.id] = 0;
 
     try {
-      context = await interceptIncomingStandard(provider, context);
+      if (error == null) {
+        context = await interceptIncomingStandard(provider, context);
+      } else {
+        context = await interceptIncomingRejected(provider, context, error);
+      }
 
       // All interceptors resolved, meaning a stable, finalized state has been reached.
       interceptIncomingFinal(provider, context);
@@ -160,7 +170,7 @@ class InterceptorManager {
     }
 
     provider.interceptors.forEach((Interceptor interceptor) {
-      interceptor.onIncomingFinal(context, error);
+      interceptor.onIncomingFinal(provider, context, error);
     });
   }
 }

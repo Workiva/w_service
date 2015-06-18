@@ -1,4 +1,9 @@
+/// Platform agnostic library for sending and receiving data messages
+/// between an application and a server with the ability to shape
+/// traffic and transform data through the use of message interceptors.
 library w_service;
+
+// TODO: Fix relative imports to use package syntax
 
 // Generic classes.
 export 'src/generic/context.dart' show Context;

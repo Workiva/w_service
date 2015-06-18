@@ -26,6 +26,9 @@ void main() {
       setUp(() {
         headers = {};
         context = httpContextFactory();
+        context.abort = ([error]) {
+          context.request.abort(error);
+        };
         context.request = new MockWRequest();
         context.response = new MockWResponse();
         when(context.request.headers).thenReturn(headers);
@@ -49,7 +52,7 @@ void main() {
       test('should do nothing if request completes before timeout', () async {
         expect(
             await interceptor.onOutgoing(provider, context), equals(context));
-        interceptor.onIncomingFinal(context, null);
+        interceptor.onIncomingFinal(provider, context, null);
         await new Future.delayed(new Duration(milliseconds: 50));
       });
 

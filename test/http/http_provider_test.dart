@@ -34,13 +34,13 @@ void main() {
 
       test('should be set on the underlying WRequest', () async {
         await provider.get();
-        verify(requests.single.headers = headers);
+        expect(requests.single.headers, equals(headers));
       });
 
       test('should persist over multiple requests', () async {
         await provider.get();
         await provider.get();
-        verify(requests.last.headers = headers);
+        expect(requests.last.headers, equals(headers));
       });
     });
 
@@ -51,13 +51,13 @@ void main() {
 
       test('should be set on the underlying WRequest', () async {
         await provider.get();
-        verify(requests.single.data = provider.data);
+        verify(requests.single.data = 'data');
       });
 
       test('should not persist over multiple requests', () async {
         await provider.get();
         await provider.get();
-        verify(requests.last.data = null);
+        expect(requests.last.data, isNull);
       });
     });
 
@@ -291,7 +291,7 @@ void main() {
           await request;
         });
         expect(exception, equals(cancellation));
-        verify(wTransportRequest.abort()).called(1);
+        verify(wTransportRequest.abort(captureAny)).called(1);
       });
 
       test('should handle cancellation after response has been received',

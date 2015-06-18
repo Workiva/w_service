@@ -184,5 +184,5 @@ abstract class Interceptor {
   /// once.
   ///
   /// By default, this does nothing.
-  void onIncomingFinal(Context context, Object error) {}
+  void onIncomingFinal(Provider provider, Context context, Object error) {}
 }
