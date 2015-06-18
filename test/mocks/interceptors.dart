@@ -33,7 +33,11 @@ class RequestCompleter {
 }
 
 /// Mock class for the [SimpleTestInterceptor]
-class MockSimpleTestInterceptor extends Mock implements SimpleTestInterceptor {}
+class MockSimpleTestInterceptor extends Mock implements SimpleTestInterceptor {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}
 
 /// Simple test interceptor that immediately completes with
 /// default behavior.
@@ -54,7 +58,11 @@ class SimpleTestInterceptor extends Interceptor {
 }
 
 /// Mock class for the [CustomTestInterceptor]
-class MockCustomTestInterceptor extends Mock implements CustomTestInterceptor {}
+class MockCustomTestInterceptor extends Mock implements CustomTestInterceptor {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}
 
 /// Custom test interceptor that uses default behavior unless
 /// overridden upon construction.
@@ -124,7 +132,11 @@ class CustomTestInterceptor extends Interceptor {
 
 /// Mock class for the [ControlledTestInterceptor]
 class MockControlledTestInterceptor extends Mock
-    implements ControlledTestInterceptor {}
+    implements ControlledTestInterceptor {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}
 
 /// Controlled test interceptor that holds requests until
 /// flushed during the following stages:

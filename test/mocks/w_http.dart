@@ -28,7 +28,11 @@ class MockWHttp implements WHttp {
   }
 }
 
-class MockWRequest extends Mock implements ControlledWRequest {}
+class MockWRequest extends Mock implements ControlledWRequest {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}
 
 class ControlledWRequest extends Mock implements WRequest {
   ControlledWRequest({bool autoFlush: true}) : this.autoFlush = autoFlush;
@@ -69,6 +73,14 @@ class ControlledWRequest extends Mock implements WRequest {
   Future post([Uri uri, data]) => _mockDispatch();
   Future put([Uri uri, data]) => _mockDispatch();
   Future trace([Uri uri]) => _mockDispatch();
+
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
 }
 
-class MockWResponse extends Mock implements WResponse {}
+class MockWResponse extends Mock implements WResponse {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}

@@ -6,7 +6,11 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:w_service/src/http/http_future.dart';
 
-class MockFuture extends Mock implements Future {}
+class MockFuture extends Mock implements Future {
+  // this tells Dart analyzer you meant not to implement all methods,
+  // and not to hint/warn that methods are missing
+  noSuchMethod(i) => super.noSuchMethod(i);
+}
 
 void main() {
   group('HttpFuture', () {
