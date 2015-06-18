@@ -35,13 +35,13 @@ class AppComponent extends react.Component {
       ]),
       react.div({'className': 'row'}, [
         react.div({'className': 'col-md-12'}, controlComponent({
-          'disableDiagnostics': this.props['disableDiagnostics'],
-          'enableDiagnostics': this.props['enableDiagnostics'],
-          'sendRequest': this.props['sendRequest'],
-          'setHavokPercentage': this.props['setHavokPercentage'],
-          'setRequestsPerSecond': this.props['setRequestsPerSecond'],
-          'startRequestStream': this.props['startRequestStream'],
-          'stopRequestStream': this.props['stopRequestStream'],
+          'disableDiagnostics': props['disableDiagnostics'],
+          'enableDiagnostics': props['enableDiagnostics'],
+          'sendRequest': props['sendRequest'],
+          'setHavokPercentage': props['setHavokPercentage'],
+          'setRequestsPerSecond': props['setRequestsPerSecond'],
+          'startRequestStream': props['startRequestStream'],
+          'stopRequestStream': props['stopRequestStream'],
         })),
       ])
     ]);
@@ -71,14 +71,14 @@ class ControlComponent extends react.Component {
 
   render() {
     var diagnosticsButton;
-    if (this.state['diagnosticsEnabled']) {
+    if (state['diagnosticsEnabled']) {
       diagnosticsButton = react.button({'className': 'btn btn-danger', 'onClick': _disableDiagnostics}, 'Disable Diagnostics');
     } else {
       diagnosticsButton = react.button({'className': 'btn btn-success', 'onClick': _enableDiagnostics}, 'Enable Diagnostics');
     }
 
     var requestStreamButton;
-    if (this.state['streaming']) {
+    if (state['streaming']) {
       requestStreamButton = react.button({'className': 'btn btn-danger', 'onClick': _stopRequestStream}, 'Stop Request Stream');
     } else {
       requestStreamButton = react.button({'className': 'btn btn-success', 'onClick': _startRequestStream}, 'Start Request Stream');
@@ -107,45 +107,45 @@ class ControlComponent extends react.Component {
 
   _disableDiagnostics(e) {
     e.preventDefault();
-    this.setState({'diagnosticsEnabled': false});
-    this.props['disableDiagnostics']();
+    setState({'diagnosticsEnabled': false});
+    props['disableDiagnostics']();
   }
 
   _enableDiagnostics(e) {
     e.preventDefault();
-    this.setState({'diagnosticsEnabled': true});
-    this.props['enableDiagnostics']();
+    setState({'diagnosticsEnabled': true});
+    props['enableDiagnostics']();
   }
 
   _sendRequest(e) {
     e.preventDefault();
-    this.props['sendRequest']();
+    props['sendRequest']();
   }
 
   _setHavokPercentage(e) {
     try {
       int v = !e.target.value.isEmpty ? int.parse(e.target.value) : 0;
-      this.props['setHavokPercentage'](v);
+      props['setHavokPercentage'](v);
     } catch (e) {}
   }
 
   _setRequestsPerSecond(e) {
     try {
       int v = !e.target.value.isEmpty ? double.parse(e.target.value) : 1;
-      this.props['setRequestsPerSecond'](v);
+      props['setRequestsPerSecond'](v);
     } catch (e) {}
   }
 
   _startRequestStream(e) {
     e.preventDefault();
-    this.setState({'streaming': true});
-    this.props['startRequestStream']();
+    setState({'streaming': true});
+    props['startRequestStream']();
   }
 
   _stopRequestStream(e) {
     e.preventDefault();
-    this.setState({'streaming': false});
-    this.props['stopRequestStream']();
+    setState({'streaming': false});
+    props['stopRequestStream']();
   }
 }
 

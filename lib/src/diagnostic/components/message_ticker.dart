@@ -7,7 +7,7 @@ import 'package:w_service/src/diagnostic/components/message.dart' show Message;
 
 var MessageTicker = react.registerComponent(() => new _MessageTicker());
 class _MessageTicker extends react.Component {
-  List<Context> get messages => this.props['messages'];
+  List<Context> get messages => props['messages'];
   Function get onExpandMessage => props['onExpandMessage'];
 
   getDefaultProps() => {'messages': [], 'onExpandMessage': (_) {}};
