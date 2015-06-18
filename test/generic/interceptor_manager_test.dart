@@ -113,7 +113,7 @@ void main() {
       });
 
       test(
-          'should throw if first of 2 intercepors throws; second not called, both onOutgoingCancelled() called',
+          'should throw if first of 2 intercepors throws; second not called, both onOutgoingCanceled() called',
           () async {
         CustomTestInterceptor rejector = new CustomTestInterceptor(
             onOutgoing: (provider, context) async {
@@ -132,9 +132,9 @@ void main() {
         });
 
         verifyNever(secondSpy.onOutgoing(any, any));
-        verify(rejectorSpy.onOutgoingCancelled(provider, context, any))
+        verify(rejectorSpy.onOutgoingCanceled(provider, context, any))
             .called(1);
-        verify(secondSpy.onOutgoingCancelled(provider, context, any)).called(1);
+        verify(secondSpy.onOutgoingCanceled(provider, context, any)).called(1);
       });
 
       test('should complete if 2 outgoing interceptors complete', () async {
@@ -170,7 +170,7 @@ void main() {
         verify(rejectorSpy.onOutgoing(provider, context)).called(1);
       });
 
-      test('should call all onOutgoingCancelled() methods if cancelled',
+      test('should call all onOutgoingCanceled() methods if canceled',
           () async {
         Exception exception = new Exception('Rejected.');
         SimpleTestInterceptor first = new SimpleTestInterceptor();
@@ -188,9 +188,9 @@ void main() {
           await manager.interceptOutgoing(provider, context);
         });
 
-        verify(firstSpy.onOutgoingCancelled(provider, context, exception))
+        verify(firstSpy.onOutgoingCanceled(provider, context, exception))
             .called(1);
-        verify(rejectorSpy.onOutgoingCancelled(provider, context, exception))
+        verify(rejectorSpy.onOutgoingCanceled(provider, context, exception))
             .called(1);
       });
     });

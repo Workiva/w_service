@@ -68,7 +68,7 @@ abstract class Interceptor {
   ///     }
   ///
   /// If this returns a Future that completes with an error,
-  /// the message will be cancelled and will not be dispatched.
+  /// the message will be canceled and will not be dispatched.
   ///
   ///     Future<Context> onOutgoing(Provider provider, Context context) async {
   ///       ...
@@ -82,7 +82,7 @@ abstract class Interceptor {
   }
 
   /// Intercepts an outgoing message from the [provider] that
-  /// has been cancelled due to an error in the `onOutgoing`
+  /// has been canceled due to an error in the `onOutgoing`
   /// interceptor chain. See [InterceptorManager] for more
   /// information.
   ///
@@ -96,7 +96,7 @@ abstract class Interceptor {
   /// purposes, so nothing needs to be returned.
   ///
   /// By default, this does nothing.
-  void onOutgoingCancelled(Provider provider, Context context, Object error) {}
+  void onOutgoingCanceled(Provider provider, Context context, Object error) {}
 
   /// Intercepts an incoming message from the [provider].
   ///

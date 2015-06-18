@@ -30,7 +30,7 @@ class TimeoutInterceptor extends Interceptor {
   }
 
   /// Maximum request duration. If any request exceeds this duration
-  /// before completing, it will be cancelled.
+  /// before completing, it will be canceled.
   Duration get maxRequestDuration => _maxRequestDuration;
   Duration _maxRequestDuration;
 
@@ -40,7 +40,7 @@ class TimeoutInterceptor extends Interceptor {
   /// Intercepts and starts a timer for an outgoing request.
   ///
   /// If the request does not complete before the max request
-  /// duration is exceeded, it will be cancelled.
+  /// duration is exceeded, it will be canceled.
   @override
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (provider is HttpProvider && context is HttpContext) {
@@ -54,9 +54,9 @@ class TimeoutInterceptor extends Interceptor {
     return context;
   }
 
-  /// Clears the timer for a request that was cancelled (was never dispatched).
+  /// Clears the timer for a request that was canceled (was never dispatched).
   @override
-  void onOutgoingCancelled(Provider provider, Context context, Object error) {
+  void onOutgoingCanceled(Provider provider, Context context, Object error) {
     // Cancel the timer - request failed to send.
     _clearTimer(context);
   }

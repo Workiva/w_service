@@ -40,7 +40,7 @@ class MockSimpleTestInterceptor extends Mock implements SimpleTestInterceptor {}
 ///
 /// onOutgoing
 ///   - completes with given context
-/// onOutgoingCancelled
+/// onOutgoingCanceled
 ///   - nothing
 /// onIncoming
 ///   - completes with given context
@@ -66,19 +66,19 @@ class MockCustomTestInterceptor extends Mock implements CustomTestInterceptor {}
 /// the fly without needing an actual class.
 class CustomTestInterceptor extends Interceptor {
   CustomTestInterceptor({onOutgoing(Provider provider, Context context),
-      onOutgoingCancelled(Provider provider, Context context, Object error),
+      onOutgoingCanceled(Provider provider, Context context, Object error),
       onIncoming(Provider provider, Context context),
       onIncomingRejected(Provider provider, Context context, Object error),
       onIncomingFinal(Provider provider, Context context, Object error)})
       : super('custom-test-interceptor${_customIntCount++}'),
         _onOutgoing = onOutgoing,
-        _onOutgoingCancelled = onOutgoingCancelled,
+        _onOutgoingCanceled = onOutgoingCanceled,
         _onIncoming = onIncoming,
         _onIncomingRejected = onIncomingRejected,
         _onIncomingFinal = onIncomingFinal;
 
   Function _onOutgoing;
-  Function _onOutgoingCancelled;
+  Function _onOutgoingCanceled;
   Function _onIncoming;
   Function _onIncomingRejected;
   Function _onIncomingFinal;
@@ -90,11 +90,11 @@ class CustomTestInterceptor extends Interceptor {
     return super.onOutgoing(provider, context);
   }
 
-  void onOutgoingCancelled(Provider provider, Context context, Object error) {
-    if (_onOutgoingCancelled != null) {
-      _onOutgoingCancelled(provider, context, error);
+  void onOutgoingCanceled(Provider provider, Context context, Object error) {
+    if (_onOutgoingCanceled != null) {
+      _onOutgoingCanceled(provider, context, error);
     } else {
-      super.onOutgoingCancelled(provider, context, error);
+      super.onOutgoingCanceled(provider, context, error);
     }
   }
 

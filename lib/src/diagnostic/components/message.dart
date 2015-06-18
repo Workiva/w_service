@@ -76,7 +76,7 @@ class _Message extends react.Component {
       } else {
         statusClass += ' wsdp-failure';
       }
-    } else if (httpContext.meta['cancelled'] == true) {
+    } else if (httpContext.meta['canceled'] == true) {
       statusClass += ' wsdp-failure';
       statusText = '(canceled)';
     }

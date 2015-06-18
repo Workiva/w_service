@@ -43,18 +43,18 @@ class DiagnosticInterceptor extends Interceptor {
   }
 
   @override
-  void onOutgoingCancelled(Provider provider, Context context, Object error) {
-    diagnostics.messageMap.update(provider, this, context, 'outgoingCancelled');
+  void onOutgoingCanceled(Provider provider, Context context, Object error) {
+    diagnostics.messageMap.update(provider, this, context, 'outgoingCanceled');
     if (isFirst) {
       context.meta['error'] = error;
       // TODO: remove this once request cancellation info is available on HttpContext
-      context.meta['cancelled'] = true;
+      context.meta['canceled'] = true;
 
       if (context is HttpContext) {
         diagnostics.providerDiagnostics[provider].httpStats.failures++;
       }
     }
-    interceptor.onOutgoingCancelled(provider, context, error);
+    interceptor.onOutgoingCanceled(provider, context, error);
     if (isLast) {
       diagnostics.messageMap.markAsComplete(context);
     }
