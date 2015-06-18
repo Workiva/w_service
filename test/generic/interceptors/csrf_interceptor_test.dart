@@ -50,6 +50,15 @@ void main() {
         expect(headers['x-xsrf-token'], equals(''));
       });
 
+      test('should not overwrite the token if already set', () async {
+        context.request.headers['x-xsrf-token'] = 'original-token';
+        interceptor = new CsrfInterceptor(header: 'x-xsrf-token');
+        interceptor.token = 'different-token';
+        expect(
+            await interceptor.onOutgoing(provider, context), equals(context));
+        expect(headers['x-xsrf-token'], equals('original-token'));
+      });
+
       test('should update the token from an incoming response', () async {
         interceptor = new CsrfInterceptor(header: 'x-xsrf-token');
         headers['x-xsrf-token'] = 'new-token';

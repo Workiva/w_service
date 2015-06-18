@@ -17,6 +17,10 @@ import 'package:w_transport/w_transport.dart';
 /// This can be overridden upon construction:
 ///
 ///     var csrfInterceptor = new CsrfInterceptor(header: 'x-csrf-token');
+///
+/// The CSRF token header will only be set if it is not already.
+/// In other words, setting the CSRF token manually on a request
+/// will override this interceptor's functionality.
 class CsrfInterceptor extends Interceptor {
   /// Construct a new [CsrfInterceptor] instance. By default,
   /// the CSRF header used is "x-xsrf-token".
@@ -40,7 +44,9 @@ class CsrfInterceptor extends Interceptor {
   Future<Context> onOutgoing(Provider provider, Context context) async {
     // Inject CSRF token into headers.
     if (context is HttpContext) {
-      context.request.headers[_header] = token;
+      if (!context.request.headers.containsKey(_header)) {
+        context.request.headers[_header] = token;
+      }
     }
     return context;
   }
