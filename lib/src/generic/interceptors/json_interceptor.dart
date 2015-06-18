@@ -33,7 +33,12 @@ class JsonInterceptor extends Interceptor {
   @override
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (context is HttpContext) {
-      context.request.headers['Content-Type'] = 'application/json';
+      // If the Content-Type header has already been set,
+      // bail so that we don't overwrite or conflict with
+      // another similar process.
+      if (context.request.headers.containsKey('content-type') && context.request.headers['content-type'] != 'application/json') return context;
+
+      context.request.headers['content-type'] = 'application/json';
       if (context.request.data != null && context.request.data is! String) {
         try {
           context.request.data = JSON.encode(context.request.data);
