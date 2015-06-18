@@ -22,7 +22,7 @@ const int _defaultMaxRetryAttempts = 3;
 int _httpProviderCount = 0;
 
 /// Possible states for every HTTP request, used by [HttpProvider].
-enum States { cancelled, complete, pending, sent }
+enum States { canceled, complete, pending, sent }
 
 /// Generate a unique ID for the next [HttpProvider].
 String _nextHttpProviderId() {
@@ -230,7 +230,7 @@ class HttpProvider extends Provider with FluriMixin {
     this.fragment = null;
 
     void abort([error]) {
-      context.meta['state'] = States.cancelled;
+      context.meta['state'] = States.canceled;
       this._cancellations[context.id] = error;
       context.request.abort(error);
     }
@@ -328,16 +328,16 @@ class HttpProvider extends Provider with FluriMixin {
   }
 
   void _checkForCancellation(HttpContext context) {
-    if (context.meta['state'] == States.cancelled) {
+    if (context.meta['state'] == States.canceled) {
       Object error = _cancellations[context.id];
-      _interceptorManager.interceptOutgoingCancelled(this, context, error);
+      _interceptorManager.interceptOutgoingCanceled(this, context, error);
       _cleanup(context);
       throw error;
     }
   }
 
   void _cleanup(HttpContext context) {
-    if (context.meta['state'] != States.cancelled) {
+    if (context.meta['state'] != States.canceled) {
       context.meta['state'] = States.complete;
     }
     if (_contexts.containsKey(context.id)) {

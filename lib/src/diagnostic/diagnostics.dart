@@ -80,7 +80,7 @@ class Diagnostics {
     provider.interceptors.forEach((interceptor) {
       messageMap.messages[provider][interceptor] = {
         'outgoing': {},
-        'outgoingCancelled': {},
+        'outgoingCanceled': {},
         'incoming': {},
         'incomingRejected': {},
         'incomingFinal': {}

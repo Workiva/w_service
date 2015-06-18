@@ -52,15 +52,15 @@ class InterceptorManager {
       }
       return context;
     } catch (error) {
-      interceptOutgoingCancelled(provider, context, error);
+      interceptOutgoingCanceled(provider, context, error);
       throw error;
     }
   }
 
-  void interceptOutgoingCancelled(
+  void interceptOutgoingCanceled(
       Provider provider, Context context, Object error) {
     for (int i = 0; i < provider.interceptors.length; i++) {
-      provider.interceptors[i].onOutgoingCancelled(provider, context, error);
+      provider.interceptors[i].onOutgoingCanceled(provider, context, error);
     }
   }
 

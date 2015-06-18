@@ -12,7 +12,7 @@ HttpFuture httpFutureFactory(Future future, onAbort([error]),
 
 /// Augmented [Future] that represents the status of an HTTP request.
 ///
-/// The request can be cancelled and the upload & download
+/// The request can be canceled and the upload & download
 /// progress can be monitored from an [HttpFuture] instance.
 class HttpFuture<T> implements Future<T> {
   HttpFuture._fromFuture(

@@ -272,7 +272,7 @@ void main() {
 
     group('request cancellation', () {
       test('should handle immediate cancellation', () async {
-        Exception cancellation = new Exception('Cancelled.');
+        Exception cancellation = new Exception('Canceled.');
         Exception exception = await expectThrowsAsync(() async {
           HttpFuture request = provider.get();
           request.abort(cancellation);
@@ -282,7 +282,7 @@ void main() {
       });
 
       test('should handle cancellation after request has been sent', () async {
-        Exception cancellation = new Exception('Cancelled.');
+        Exception cancellation = new Exception('Canceled.');
         MockWRequest wTransportRequest;
         Exception exception = await expectThrowsAsync(() async {
           HttpFuture request = provider.get();
@@ -298,7 +298,7 @@ void main() {
           () async {
         HttpFuture request = provider.get();
         await request;
-        request.abort(new Exception('Cancelled.'));
+        request.abort(new Exception('Canceled.'));
       });
     });
 

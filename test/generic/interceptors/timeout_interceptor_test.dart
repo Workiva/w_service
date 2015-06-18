@@ -41,11 +41,11 @@ void main() {
             new TimeoutInterceptor().maxRequestDuration.inSeconds, equals(15));
       });
 
-      test('should do nothing if request is cancelled before timeout',
+      test('should do nothing if request is canceled before timeout',
           () async {
         expect(
             await interceptor.onOutgoing(provider, context), equals(context));
-        interceptor.onOutgoingCancelled(provider, context, null);
+        interceptor.onOutgoingCanceled(provider, context, null);
         await new Future.delayed(new Duration(milliseconds: 50));
       });
 
