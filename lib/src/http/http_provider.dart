@@ -6,10 +6,10 @@ import 'dart:convert';
 import 'package:fluri/fluri.dart';
 import 'package:w_transport/w_transport.dart';
 
-import '../generic/interceptor_manager.dart';
-import '../generic/provider.dart';
-import 'http_context.dart';
-import 'http_future.dart';
+import 'package:w_service/src/generic/interceptor_manager.dart';
+import 'package:w_service/src/generic/provider.dart';
+import 'package:w_service/src/http/http_context.dart';
+import 'package:w_service/src/http/http_future.dart';
 
 typedef WRequest WRequestFactory();
 

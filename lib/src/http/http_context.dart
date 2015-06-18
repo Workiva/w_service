@@ -2,7 +2,7 @@ library w_service.src.http.http_context;
 
 import 'package:w_transport/w_transport.dart';
 
-import '../generic/context.dart';
+import 'package:w_service/src/generic/context.dart';
 
 int _count = 0;
 const String _idPrefix = 'http-context-';

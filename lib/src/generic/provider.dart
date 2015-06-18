@@ -1,6 +1,6 @@
 library w_service.src.providers.provider;
 
-import 'interceptor.dart';
+import 'package:w_service/src/generic/interceptor.dart';
 
 /// A class used as an entry point for sending and receiving
 /// data messages that handle transport-specific details.

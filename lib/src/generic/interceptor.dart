@@ -2,8 +2,8 @@ library w_service.src.generic.interceptor;
 
 import 'dart:async';
 
-import 'context.dart';
-import 'provider.dart';
+import 'package:w_service/src/generic/context.dart';
+import 'package:w_service/src/generic/provider.dart';
 
 /// A class used to intercept outgoing and incoming messages.
 /// Purposes include message preparation, data transformation,

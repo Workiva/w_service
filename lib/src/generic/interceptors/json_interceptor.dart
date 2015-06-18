@@ -3,10 +3,10 @@ library w_service.src.generic.interceptors.json_interceptor;
 import 'dart:async';
 import 'dart:convert';
 
-import '../../http/http_context.dart';
-import '../context.dart';
-import '../interceptor.dart';
-import '../provider.dart';
+import 'package:w_service/src/generic/context.dart';
+import 'package:w_service/src/generic/interceptor.dart';
+import 'package:w_service/src/generic/provider.dart';
+import 'package:w_service/src/http/http_context.dart';
 
 /// An interceptor that handles encoding and decoding of data
 /// payloads on outgoing and incoming messages, respectively.
