@@ -41,13 +41,13 @@ class HttpFuture<T> implements Future<T> {
   Stream<T> asStream() => _future.asStream();
 
   Future catchError(Function onError, {bool test(error)}) =>
-  new HttpFuture._fromFuture(_future.catchError(onError, test: test),
-  _onAbort, uploadProgress, downloadProgress);
+      new HttpFuture._fromFuture(_future.catchError(onError, test: test),
+          _onAbort, uploadProgress, downloadProgress);
 
   Future timeout(Duration timeLimit, {onTimeout()}) =>
-  new HttpFuture._fromFuture(
-      _future.timeout(timeLimit, onTimeout: onTimeout), _onAbort,
-      uploadProgress, downloadProgress);
+      new HttpFuture._fromFuture(
+          _future.timeout(timeLimit, onTimeout: onTimeout), _onAbort,
+          uploadProgress, downloadProgress);
 
   Future then(f(T value), {Function onError}) => new HttpFuture._fromFuture(
       _future.then(f, onError: onError), _onAbort, uploadProgress,

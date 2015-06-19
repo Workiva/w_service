@@ -15,8 +15,10 @@ export 'package:w_service/src/generic/interceptor_manager.dart'
 export 'package:w_service/src/generic/provider.dart' show Provider;
 
 // Interceptors.
-export 'package:w_service/src/generic/interceptors/csrf_interceptor.dart' show CsrfInterceptor;
-export 'package:w_service/src/generic/interceptors/json_interceptor.dart' show JsonInterceptor;
+export 'package:w_service/src/generic/interceptors/csrf_interceptor.dart'
+    show CsrfInterceptor;
+export 'package:w_service/src/generic/interceptors/json_interceptor.dart'
+    show JsonInterceptor;
 export 'package:w_service/src/generic/interceptors/timeout_interceptor.dart'
     show TimeoutInterceptor;
 

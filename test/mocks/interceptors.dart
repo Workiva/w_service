@@ -137,11 +137,11 @@ class MockControlledTestInterceptor extends Mock
 /// [RequestCompleter] to manually complete the requests.
 class ControlledTestInterceptor extends Interceptor {
   StreamController<RequestCompleter> _outgoingRequestStreamController =
-  new StreamController();
+      new StreamController();
   StreamController<RequestCompleter> _incomingRequestStreamController =
-  new StreamController();
+      new StreamController();
   StreamController<RequestCompleter> _incomingRejectedRequestStreamController =
-  new StreamController();
+      new StreamController();
 
   ControlledTestInterceptor()
       : super('controlled-test-interceptor-${_controlledIntCount++}');

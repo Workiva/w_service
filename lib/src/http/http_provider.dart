@@ -75,9 +75,9 @@ class HttpProvider extends Provider with FluriMixin {
   /// Test function that helps determine whether or not a failed
   /// request is retryable.
   Function _retryWhen = (HttpContext context) =>
-  (context.meta.containsKey('retryable') && context.meta['retryable']) ||
-  (context.response != null &&
-  [500, 502].contains(context.response.status));
+      (context.meta.containsKey('retryable') && context.meta['retryable']) ||
+          (context.response != null &&
+              [500, 502].contains(context.response.status));
 
   /// Whether or not automatic request retrying is enabled.
   bool _shouldRetry = false;

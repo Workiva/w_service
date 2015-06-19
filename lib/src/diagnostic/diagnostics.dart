@@ -115,7 +115,8 @@ class Diagnostics {
 class MessageMap {
   List<Context> complete = [];
   List<Context> detailed = [];
-  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages = {};
+  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages =
+      {};
   List<Context> pending = [];
   List<Context> recent = [];
 

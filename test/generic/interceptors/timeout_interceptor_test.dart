@@ -41,8 +41,7 @@ void main() {
             new TimeoutInterceptor().maxRequestDuration.inSeconds, equals(15));
       });
 
-      test('should do nothing if request is canceled before timeout',
-          () async {
+      test('should do nothing if request is canceled before timeout', () async {
         expect(
             await interceptor.onOutgoing(provider, context), equals(context));
         interceptor.onOutgoingCanceled(provider, context, null);
