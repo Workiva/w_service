@@ -81,18 +81,22 @@ void main() {
 
       test('should not overwrite the content-type header', () async {
         headers['content-type'] = 'text/plain';
-        expect(await interceptor.onOutgoing(provider, context), equals(context));
+        expect(
+            await interceptor.onOutgoing(provider, context), equals(context));
         expect(context.request.headers['content-type'], equals('text/plain'));
       });
 
-      test('should not try to encode the data if the content-type header has already been set', () async {
+      test(
+          'should not try to encode the data if the content-type header has already been set',
+          () async {
         headers['content-type'] = 'text/plain';
         Map data = {
           'name': 'Supported Transports',
           'items': ['HTTP', 'WebSocket']
         };
         when(context.request.data).thenReturn(data);
-        expect(await interceptor.onOutgoing(provider, context), equals(context));
+        expect(
+            await interceptor.onOutgoing(provider, context), equals(context));
         verifyNever(context.request.data = JSON.encode(data));
       });
     });
