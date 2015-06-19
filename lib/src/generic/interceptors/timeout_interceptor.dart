@@ -2,11 +2,11 @@ library w_service.src.generic.interceptors.timeout_interceptor;
 
 import 'dart:async';
 
-import '../../http/http_context.dart';
-import '../../http/http_provider.dart';
-import '../context.dart';
-import '../interceptor.dart';
-import '../provider.dart';
+import 'package:w_service/src/generic/context.dart';
+import 'package:w_service/src/generic/interceptor.dart';
+import 'package:w_service/src/generic/provider.dart';
+import 'package:w_service/src/http/http_context.dart';
+import 'package:w_service/src/http/http_provider.dart';
 
 /// An interceptor that sets a timer for each outgoing request
 /// and cancels the request if it does not complete within a

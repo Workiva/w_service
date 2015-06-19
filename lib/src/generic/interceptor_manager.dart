@@ -2,9 +2,9 @@ library w_service.src.generic.interceptor_manager;
 
 import 'dart:async';
 
-import 'context.dart';
-import 'interceptor.dart';
-import 'provider.dart';
+import 'package:w_service/src/generic/context.dart';
+import 'package:w_service/src/generic/interceptor.dart';
+import 'package:w_service/src/generic/provider.dart';
 
 /// By default, allow a maximum of 10 attempts at completing
 /// the incoming interceptor chain. This allows 5 back and
