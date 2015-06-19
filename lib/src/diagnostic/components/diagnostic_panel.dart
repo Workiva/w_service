@@ -24,12 +24,12 @@ const int _maxTickerMessages = 10;
 
 var DiagnosticPanel = react.registerComponent(() => new _DiagnosticPanel());
 class _DiagnosticPanel extends react.Component {
-  Diagnostics get diagnostics => this.props['diagnostics'];
+  Diagnostics get diagnostics => props['diagnostics'];
 
-  List<Context> get detailedMessages => this.state['detailedMessages'];
-  List<Context> get messages => this.state['messages'];
+  List<Context> get detailedMessages => state['detailedMessages'];
+  List<Context> get messages => state['messages'];
   List<ProviderDiagnostics> get providerDiagnostics =>
-      this.state['providerDiagnostics'];
+      state['providerDiagnostics'];
 
   List<StreamSubscription> _subscriptions = [];
 
@@ -83,11 +83,11 @@ class _DiagnosticPanel extends react.Component {
 
   void _subscribeToDiagnostics() {
     _subscriptions.add(diagnostics.messageMap.stream.listen((messageMap) {
-      this.setState({'messageMap': messageMap});
+      setState({'messageMap': messageMap});
     }));
     _subscriptions.add(diagnostics.providerDiagnosticsStream
         .listen((providerDiagnostics) {
-      this.setState({'providerDiagnostics': providerDiagnostics});
+      setState({'providerDiagnostics': providerDiagnostics});
     }));
   }
 

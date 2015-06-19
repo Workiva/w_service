@@ -5,9 +5,9 @@ import 'package:w_service/w_service.dart';
 
 var Message = react.registerComponent(() => new _Message());
 class _Message extends react.Component {
-  Context get context => this.props['context'];
-  bool get controllable => this.props['controllable'];
-  bool get detailed => this.props['detailed'];
+  Context get context => props['context'];
+  bool get controllable => props['controllable'];
+  bool get detailed => props['detailed'];
 
   /// HTTP-specific details
   /// These should only be used when dealing with an HttpContext instance.
