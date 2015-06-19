@@ -3,12 +3,6 @@ library w_service.src.generic.context;
 /// Context for service messages including a unique identifier,
 /// a timestamp, and a catch-all meta object.
 abstract class Context {
-  /// Construct a new [Context] instance with an empty [meta] map and
-  /// a [timestamp] of now.
-  Context(this.id)
-      : meta = {},
-        timestamp = new DateTime.now();
-
   /// Unique message identifier. Should be globally unique.
   final String id;
 
@@ -22,4 +16,10 @@ abstract class Context {
 
   /// Timestamp marking the creation of this [Context] instance.
   final DateTime timestamp;
+
+  /// Construct a new [Context] instance with an empty [meta] map and
+  /// a [timestamp] of now.
+  Context(this.id)
+      : meta = {},
+        timestamp = new DateTime.now();
 }

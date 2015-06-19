@@ -9,6 +9,14 @@ import 'package:w_service/src/diagnostic/provider_diagnostics.dart'
 import 'package:w_service/w_service.dart';
 
 class Diagnostics {
+  List<Provider> controlledFor = [];
+  MessageMap messageMap;
+  Map<Provider, ProviderDiagnostics> providerDiagnostics = {};
+
+  Map<Context, Completer> _pending = {};
+  StreamController<List<ProviderDiagnostics>> _providerDiagnosticsStreamController;
+  Stream<List<ProviderDiagnostics>> _providerDiagnosticsStream;
+
   Diagnostics() {
     messageMap = new MessageMap();
 
@@ -27,12 +35,6 @@ class Diagnostics {
     return stats;
   }
 
-  List<Provider> controlledFor = [];
-
-  MessageMap messageMap;
-
-  Map<Provider, ProviderDiagnostics> providerDiagnostics = {};
-
   Stream<List<ProviderDiagnostics>> get providerDiagnosticsStream =>
       _providerDiagnosticsStream;
 
@@ -44,10 +46,6 @@ class Diagnostics {
     });
     return stats;
   }
-
-  Map<Context, Completer> _pending = {};
-  StreamController<List<ProviderDiagnostics>> _providerDiagnosticsStreamController;
-  Stream<List<ProviderDiagnostics>> _providerDiagnosticsStream;
 
   void advance(Context context) {
     _pending[context].complete();
@@ -115,28 +113,22 @@ class Diagnostics {
 }
 
 class MessageMap {
+  List<Context> complete = [];
+  List<Context> detailed = [];
+  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages = {};
+  List<Context> pending = [];
+  List<Context> recent = [];
+
+  Map<Context, _Location> _locations = {};
+  Stream<MessageMap> _stream;
+  StreamController<MessageMap> _streamController;
+
   MessageMap() {
     _streamController = new StreamController();
     _stream = _streamController.stream.asBroadcastStream();
   }
 
-  List<Context> complete = [];
-
-  List<Context> detailed = [];
-
-  Map<Provider, Map<Interceptor, Map<String, Map<String, Context>>>> messages =
-      {};
-
-  List<Context> pending = [];
-
-  List<Context> recent = [];
-
   Stream<MessageMap> get stream => _stream;
-
-  Map<Context, _Location> _locations = {};
-
-  Stream<MessageMap> _stream;
-  StreamController<MessageMap> _streamController;
 
   void closeDetailsFor(Context context) {
     if (detailed.contains(context)) {

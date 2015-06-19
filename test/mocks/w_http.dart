@@ -31,13 +31,12 @@ class MockWHttp implements WHttp {
 class MockWRequest extends Mock implements ControlledWRequest {}
 
 class ControlledWRequest extends Mock implements WRequest {
-  ControlledWRequest({bool autoFlush: true}) : this.autoFlush = autoFlush;
-
   bool autoFlush;
-
   Map headers = {};
-
+  Completer<WResponse> _completer = new Completer<WResponse>();
   Completer _ready = new Completer();
+
+  ControlledWRequest({bool autoFlush: true}) : this.autoFlush = autoFlush;
 
   Future _mockDispatch() {
     _ready.complete();
@@ -46,8 +45,6 @@ class ControlledWRequest extends Mock implements WRequest {
     }
     return _completer.future;
   }
-
-  Completer<WResponse> _completer = new Completer<WResponse>();
 
   void complete([WResponse response]) {
     _ready.future.then((_) {

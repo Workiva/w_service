@@ -26,6 +26,9 @@ class InterceptorManager {
   /// chain for each request context, keyed by context ID.
   Map<String, int> _incomingTries = {};
 
+  /// Maximum number of incoming interceptor cycles.
+  int _maxIncomingInterceptorAttempts = _defaultMaxIncomingInterceptorAttempts;
+
   /// Get and set the maximum number of cycles/attempts to allow
   /// when trying to complete the incoming interceptor chain.
   void set maxIncomingInterceptorAttempts(int max) {
@@ -34,7 +37,6 @@ class InterceptorManager {
     _maxIncomingInterceptorAttempts = max;
   }
   int get maxIncomingInterceptorAttempts => _maxIncomingInterceptorAttempts;
-  int _maxIncomingInterceptorAttempts = _defaultMaxIncomingInterceptorAttempts;
 
   /// Intercepts an outgoing message, described by [context],
   /// from the [provider] by applying all interceptors
@@ -57,6 +59,12 @@ class InterceptorManager {
     }
   }
 
+  /// Intercepts an outgoing message, described by [context],
+  /// from the [provider] that has been canceled. Applies all
+  /// interceptors registered with [provider] in order.
+  ///
+  /// Cancellation may have been manual (canceled by the caller)
+  /// or a result of an outgoing interceptor.
   void interceptOutgoingCanceled(
       Provider provider, Context context, Object error) {
     for (int i = 0; i < provider.interceptors.length; i++) {
@@ -183,7 +191,7 @@ class InterceptorManager {
 /// This is usually an indication of a logic bug in an
 /// [Interceptor] leading to an infinite cycle.
 class MaxInterceptorAttemptsExceeded implements Exception {
-  MaxInterceptorAttemptsExceeded(this.message);
   final String message;
   String toString() => message;
+  MaxInterceptorAttemptsExceeded(this.message);
 }

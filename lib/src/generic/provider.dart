@@ -9,9 +9,6 @@ import 'package:w_service/src/generic/interceptor.dart';
 /// [Provider page](https://github.com/Workiva/w_service/wiki/2.-Provider)
 /// on the `w_service` wiki.
 abstract class Provider {
-  /// Construct a new instance of [Provider] with the given unique identifier.
-  Provider(String this.id);
-
   /// Unique identifier.
   String id;
 
@@ -19,6 +16,9 @@ abstract class Provider {
   /// this list is applied, in order, on every outgoing and
   /// incoming message.
   List<Interceptor> interceptors = [];
+
+  /// Construct a new instance of [Provider] with the given unique identifier.
+  Provider(String this.id);
 
   /// Register an [Interceptor].
   void use(Interceptor interceptor) {
