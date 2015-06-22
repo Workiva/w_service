@@ -448,6 +448,24 @@ void main() {
       });
 
       test(
+          'should move immediately to the onIncomingRejected if started with an error',
+          () async {
+        SimpleTestInterceptor simpleInt = new SimpleTestInterceptor();
+        MockSimpleTestInterceptor mockInt =
+            spy(new MockSimpleTestInterceptor(), simpleInt);
+        provider.use(mockInt);
+
+        var cancellation = new Exception('Canceled in flight.');
+        var exception = await expectThrowsAsync(() async {
+          await manager.interceptIncoming(provider, context, cancellation);
+        });
+        expect(exception, equals(cancellation));
+
+        verifyNever(mockInt.onIncoming(provider, context));
+        verify(mockInt.onIncomingRejected(provider, context, any)).called(1);
+      });
+
+      test(
           'should call all onIncomingFinal() methods after the context is finalized (successfully)',
           () async {
         bool rejected = false;

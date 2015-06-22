@@ -62,8 +62,8 @@ class TimeoutInterceptor extends Interceptor {
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (provider is HttpProvider && context is HttpContext) {
       _timers[context.id] = new Timer(maxRequestDuration, () {
-        context.meta['retryable'] = true;
-        context.abort(new Exception(
+        context.retryable = true;
+        context.cancelRequest(new Exception(
             'Timeout threshold of ${maxRequestDuration.inSeconds.toString()} seconds exceeded.'));
         _clearTimer(context);
       });
