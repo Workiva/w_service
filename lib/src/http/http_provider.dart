@@ -160,52 +160,99 @@ class HttpProvider extends Provider with FluriMixin {
   }
 
   /// Sends a DELETE request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  HttpFuture<WResponse> delete([Uri uri]) {
-    return _send('DELETE', uri);
-  }
-  /// Sends a GET request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  HttpFuture<WResponse> get([Uri uri]) {
-    return _send('GET', uri);
-  }
-  /// Sends a HEAD request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  HttpFuture<WResponse> head([Uri uri]) {
-    return _send('HEAD', uri);
-  }
-  /// Sends an OPTIONS request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  HttpFuture<WResponse> options([Uri uri]) {
-    return _send('OPTIONS', uri);
-  }
-  /// Sends a PATCH request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  /// Attaches [data], if given, or uses the data from this [HttpProvider].
-  HttpFuture<WResponse> patch([Uri uri, Object data]) {
-    return _send('PATCH', uri, data);
-  }
-  /// Sends a POST request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  /// Attaches [data], if given, or uses the data from this [HttpProvider].
-  HttpFuture<WResponse> post([Uri uri, Object data]) {
-    return _send('POST', uri, data);
-  }
-  /// Sends a PUT request to the given [uri].
-  /// If [uri] is null, the uri on this [HttpProvider] will be used.
-  /// Attaches [data], if given, or uses the data from this [HttpProvider].
-  HttpFuture<WResponse> put([Uri uri, Object data]) {
-    return _send('PUT', uri, data);
-  }
-  /// Sends a TRACE request to the given [uri].
+  ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
   ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> delete({Map<String, String> headers, Uri uri}) {
+    return _send('DELETE', headers: headers, uri: uri);
+  }
+  /// Sends a GET request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> get({Map<String, String> headers, Uri uri}) {
+    return _send('GET', headers: headers, uri: uri);
+  }
+  /// Sends a HEAD request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> head({Map<String, String> headers, Uri uri}) {
+    return _send('HEAD', headers: headers, uri: uri);
+  }
+  /// Sends an OPTIONS request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> options({Map<String, String> headers, Uri uri}) {
+    return _send('OPTIONS', headers: headers, uri: uri);
+  }
+  /// Sends a PATCH request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Attaches [data], if given, or uses the data from this [HttpProvider].
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> patch(
+      {Object data, Map<String, String> headers, Uri uri}) {
+    return _send('PATCH', data: data, headers: headers, uri: uri);
+  }
+  /// Sends a POST request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Attaches [data], if given, or uses the data from this [HttpProvider].
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> post(
+      {Object data, Map<String, String> headers, Uri uri}) {
+    return _send('POST', data: data, headers: headers, uri: uri);
+  }
+  /// Sends a PUT request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Attaches [data], if given, or uses the data from this [HttpProvider].
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  HttpFuture<WResponse> put(
+      {Object data, Map<String, String> headers, Uri uri}) {
+    return _send('PUT', data: data, headers: headers, uri: uri);
+  }
+  /// Sends a TRACE request to the given [uri].
+  ///
+  /// If [uri] is null, the uri on this [HttpProvider] will be used.
+  ///
+  /// Optionally, [headers] can be provided. These headers will only
+  /// apply to this request and will be merged with the headers already
+  /// set for this [HttpProvider].
+  ///
   /// **Note:** For security reasons, TRACE requests are forbidden in the browser.
-  HttpFuture<WResponse> trace([Uri uri]) {
-    return _send('TRACE', uri);
+  HttpFuture<WResponse> trace({Map<String, String> headers, Uri uri}) {
+    return _send('TRACE', headers: headers, uri: uri);
   }
 
-  HttpFuture<WResponse> _send(String method, [Uri uri, Object data]) {
+  HttpFuture<WResponse> _send(String method,
+      {Object data, Map<String, String> headers, Uri uri}) {
     Uri reqUri = uri != null ? uri : this.uri;
     if (reqUri == null || reqUri.toString() == '') throw new StateError(
         'HttpProvider: Cannot send a request without a URI.');
@@ -217,10 +264,15 @@ class HttpProvider extends Provider with FluriMixin {
     context.meta['state'] = States.pending;
     context.meta['method'] = method;
 
+    Map reqHeaders = new Map.from(this.headers);
+    if (headers != null) {
+      reqHeaders.addAll(headers);
+    }
+
     context.request = _http.newRequest()
       ..uri = Uri.parse(reqUri.toString())
       ..encoding = this.encoding
-      ..headers = new Map.from(this.headers);
+      ..headers = reqHeaders;
 
     context.request.data = data != null ? data : this.data;
     ;
