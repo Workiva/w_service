@@ -1,5 +1,12 @@
 name: w_service
 version: 0.0.0
+description: Platform agnostic library for sending and receiving data messages between an application and a server with the ability to shape traffic and transform data through the use of message interceptors.
+authors:
+  - Workiva Client Platform Team <clientplatform@workiva.com>
+  - Evan Weible <evan.weible@workiva.com>
+  - Max Peterson <maxwell.peterson@workiva.com>
+  - Trent Grover <trent.grover@workiva.com>
+homepage: https://github.com/Workiva/w_service
 dependencies:
   fluri: '>=1.0.0 <2.0.0'
   w_transport:
