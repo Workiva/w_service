@@ -22,6 +22,12 @@ import 'package:w_transport/w_transport.dart';
 /// In other words, setting the CSRF token manually on a request
 /// will override this interceptor's functionality.
 class CsrfInterceptor extends Interceptor {
+  /// Get and set the CSRF token to be set on every outgoing request.
+  String token = '';
+
+  /// CSRF header name - "x-xsrf-token" by default.
+  final String _header;
+
   /// Construct a new [CsrfInterceptor] instance. By default,
   /// the CSRF header used is "x-xsrf-token".
   ///
@@ -31,12 +37,6 @@ class CsrfInterceptor extends Interceptor {
   CsrfInterceptor({String header: 'x-xsrf-token'})
       : super('csrf'),
         _header = header;
-
-  /// Get and set the CSRF token to be set on every outgoing request.
-  String token = '';
-
-  /// CSRF header name - "x-xsrf-token" by default.
-  final String _header;
 
   /// Intercepts an outgoing request and sets the appropriate header
   /// with the latest CSRF token.

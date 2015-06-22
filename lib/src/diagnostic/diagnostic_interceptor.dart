@@ -6,14 +6,14 @@ import 'package:w_service/src/diagnostic/diagnostics.dart' show Diagnostics;
 import 'package:w_service/w_service.dart';
 
 class DiagnosticInterceptor extends Interceptor {
-  DiagnosticInterceptor(
-      String id, Interceptor this.interceptor, Diagnostics this.diagnostics)
-      : super(id);
-
   Diagnostics diagnostics;
   bool isFirst = false;
   bool isLast = false;
   Interceptor interceptor;
+
+  DiagnosticInterceptor(
+      String id, Interceptor this.interceptor, Diagnostics this.diagnostics)
+      : super(id);
 
   @override
   Future<Context> onOutgoing(Provider provider, Context context) async {

@@ -8,7 +8,9 @@ import 'package:w_service/src/diagnostic/diagnostic_stats.dart'
 import 'package:w_service/w_service.dart';
 
 class ProviderDiagnostics {
+  HttpStats httpStats = new HttpStats();
   Provider provider;
+  WebSocketStats webSocketStats = new WebSocketStats();
 
   ProviderDiagnostics(Provider this.provider, Diagnostics diagnostics) {
     // Wrap a DiagnosticInterceptor around each interceptor.
@@ -22,9 +24,6 @@ class ProviderDiagnostics {
     (provider.interceptors.first as DiagnosticInterceptor).isFirst = true;
     (provider.interceptors.last as DiagnosticInterceptor).isLast = true;
   }
-
-  HttpStats httpStats = new HttpStats();
-  WebSocketStats webSocketStats = new WebSocketStats();
 
   /// Restore the original state of the provider.
   /// Removes the diagnostic-only interceptors and unwraps

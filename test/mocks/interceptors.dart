@@ -73,6 +73,12 @@ class MockCustomTestInterceptor extends Mock implements CustomTestInterceptor {
 /// Effectively, this lets you create a custom interceptor on
 /// the fly without needing an actual class.
 class CustomTestInterceptor extends Interceptor {
+  Function _onOutgoing;
+  Function _onOutgoingCanceled;
+  Function _onIncoming;
+  Function _onIncomingRejected;
+  Function _onIncomingFinal;
+
   CustomTestInterceptor({onOutgoing(Provider provider, Context context),
       onOutgoingCanceled(Provider provider, Context context, Object error),
       onIncoming(Provider provider, Context context),
@@ -84,12 +90,6 @@ class CustomTestInterceptor extends Interceptor {
         _onIncoming = onIncoming,
         _onIncomingRejected = onIncomingRejected,
         _onIncomingFinal = onIncomingFinal;
-
-  Function _onOutgoing;
-  Function _onOutgoingCanceled;
-  Function _onIncoming;
-  Function _onIncomingRejected;
-  Function _onIncomingFinal;
 
   Future<Context> onOutgoing(Provider provider, Context context) async {
     if (_onOutgoing != null) {
@@ -148,15 +148,15 @@ class MockControlledTestInterceptor extends Mock
 /// request that enters one of these methods and use the
 /// [RequestCompleter] to manually complete the requests.
 class ControlledTestInterceptor extends Interceptor {
-  ControlledTestInterceptor()
-      : super('controlled-test-interceptor-${_controlledIntCount++}');
-
   StreamController<RequestCompleter> _outgoingRequestStreamController =
       new StreamController();
   StreamController<RequestCompleter> _incomingRequestStreamController =
       new StreamController();
   StreamController<RequestCompleter> _incomingRejectedRequestStreamController =
       new StreamController();
+
+  ControlledTestInterceptor()
+      : super('controlled-test-interceptor-${_controlledIntCount++}');
 
   Stream<RequestCompleter> get outgoing =>
       _outgoingRequestStreamController.stream;

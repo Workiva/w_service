@@ -15,6 +15,13 @@ import 'package:w_service/src/http/http_provider.dart';
 /// This interceptor is designed for HTTP requests and only has an
 /// effect when used with the [HttpProvider].
 class TimeoutInterceptor extends Interceptor {
+
+  /// Maximum request duration.
+  Duration _maxRequestDuration;
+
+  /// Map of timers for outstanding requests.
+  Map<String, Timer> _timers = {};
+
   /// Construct a new [TimeoutInterceptor] instance.
   ///
   /// By default, the maximum request duration is 15 seconds.
@@ -32,10 +39,6 @@ class TimeoutInterceptor extends Interceptor {
   /// Maximum request duration. If any request exceeds this duration
   /// before completing, it will be canceled.
   Duration get maxRequestDuration => _maxRequestDuration;
-  Duration _maxRequestDuration;
-
-  /// Map of timers for outstanding requests.
-  Map<String, Timer> _timers = {};
 
   /// Intercepts and starts a timer for an outgoing request.
   ///

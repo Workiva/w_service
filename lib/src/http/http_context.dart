@@ -19,11 +19,6 @@ HttpContext httpContextFactory() => new HttpContext._();
 /// [HttpContext] includes [request] and [response]
 /// properties that are specific to HTTP transport.
 class HttpContext extends Context {
-  /// Construct a new [HttpContext] instance.
-  /// The [request] and [response] properties should be
-  /// populated as they become available.
-  HttpContext._() : super('$_idPrefix${_count++}');
-
   // TODO: this is a stop-gap, will be replaced by a real method.
   var abort;
 
@@ -34,4 +29,9 @@ class HttpContext extends Context {
   /// [w_transport](https://github.com/Workiva/w_transport)
   /// WResponse object representing the response to the request.
   WResponse response;
+
+  /// Construct a new [HttpContext] instance.
+  /// The [request] and [response] properties should be
+  /// populated as they become available.
+  HttpContext._() : super('$_idPrefix${_count++}');
 }

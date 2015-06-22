@@ -38,14 +38,14 @@ import 'package:w_service/src/generic/provider.dart';
 ///         }
 ///     }
 abstract class Interceptor {
+  /// Unique identifier.
+  final String id;
+
   /// Construct a new [Interceptor] instance.
   ///
   /// The [id] should be unique among all interceptors.
   /// If appropriate, use a namespace prefix.
   Interceptor(String id) : this.id = id;
-
-  /// Unique identifier.
-  final String id;
 
   /// Intercepts an outgoing message from the [provider].
   ///

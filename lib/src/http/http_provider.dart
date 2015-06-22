@@ -13,6 +13,9 @@ import 'package:w_service/src/http/http_future.dart';
 
 typedef WRequest WRequestFactory();
 
+/// Possible states for every HTTP request, used by [HttpProvider].
+enum States { canceled, complete, pending, sent }
+
 /// By default, requests will be retried up to 3 times
 /// before failing completely (when automatic retrying
 /// is enabled).
@@ -20,9 +23,6 @@ const int _defaultMaxRetryAttempts = 3;
 
 /// Counter used to create unique default IDs for HttpProviders.
 int _httpProviderCount = 0;
-
-/// Possible states for every HTTP request, used by [HttpProvider].
-enum States { canceled, complete, pending, sent }
 
 /// Generate a unique ID for the next [HttpProvider].
 String _nextHttpProviderId() {
@@ -39,14 +39,6 @@ String _nextHttpProviderId() {
 /// /// [w_transport](https://github.com/Workiva/w_transport)'s
 /// requests support.
 class HttpProvider extends Provider with FluriMixin {
-  /// Construct a new [HttpProvider] instance.
-  HttpProvider({String id, WHttp http, InterceptorManager interceptorManager})
-      : super(id != null ? id : _nextHttpProviderId()),
-        _http = http != null ? http : new WHttp(),
-        _interceptorManager = interceptorManager != null
-            ? interceptorManager
-            : new InterceptorManager();
-
   /// Request headers to send on every request.
   Map<String, String> headers = {};
 
@@ -56,17 +48,6 @@ class HttpProvider extends Provider with FluriMixin {
 
   /// Encoding to use on the request data.
   Encoding encoding = UTF8;
-
-  /// Update the meta configuration for the next request.
-  /// This does not persist over multiple requests.
-  void set meta(Map<String, dynamic> meta) {
-    if (meta == null) {
-      meta = {};
-    }
-    _meta = meta;
-  }
-  Map<String, dynamic> get meta => _meta;
-  Map<String, dynamic> _meta = {};
 
   /// Whether or not to send the request with credentials.
   ///
@@ -89,6 +70,8 @@ class HttpProvider extends Provider with FluriMixin {
   /// Number of times to retry a request before failing completely.
   int _maxRetryAttempts = _defaultMaxRetryAttempts;
 
+  Map<String, dynamic> _meta = {};
+
   /// Test function that helps determine whether or not a failed
   /// request is retryable.
   Function _retryWhen = (HttpContext context) =>
@@ -98,6 +81,24 @@ class HttpProvider extends Provider with FluriMixin {
 
   /// Whether or not automatic request retrying is enabled.
   bool _shouldRetry = false;
+
+  /// Construct a new [HttpProvider] instance.
+  HttpProvider({String id, WHttp http, InterceptorManager interceptorManager})
+      : super(id != null ? id : _nextHttpProviderId()),
+        _http = http != null ? http : new WHttp(),
+        _interceptorManager = interceptorManager != null
+            ? interceptorManager
+            : new InterceptorManager();
+
+  /// Update the meta configuration for the next request.
+  /// This does not persist over multiple requests.
+  void set meta(Map<String, dynamic> meta) {
+    if (meta == null) {
+      meta = {};
+    }
+    _meta = meta;
+  }
+  Map<String, dynamic> get meta => _meta;
 
   /// Enables automatic request retrying. Will retry failed requests
   /// (that fit retryable criteria) up to a maximum number of attempts.
@@ -274,6 +275,27 @@ class HttpProvider extends Provider with FluriMixin {
         context.request.downloadProgress);
   }
 
+  void _checkForCancellation(HttpContext context) {
+    if (context.meta['state'] == States.canceled) {
+      Object error = _cancellations[context.id];
+      _interceptorManager.interceptOutgoingCanceled(this, context, error);
+      _cleanup(context);
+      throw error;
+    }
+  }
+
+  void _cleanup(HttpContext context) {
+    if (context.meta['state'] != States.canceled) {
+      context.meta['state'] = States.complete;
+    }
+    if (_contexts.containsKey(context.id)) {
+      _contexts.remove(context.id);
+    }
+    if (_cancellations.containsKey(context.id)) {
+      _cancellations.remove(context.id);
+    }
+  }
+
   Future<HttpContext> _dispatch(String method, HttpContext context) async {
     // Apply outgoing interceptors.
     context = await _interceptorManager.interceptOutgoing(this, context);
@@ -327,27 +349,6 @@ class HttpProvider extends Provider with FluriMixin {
     return context;
   }
 
-  void _checkForCancellation(HttpContext context) {
-    if (context.meta['state'] == States.canceled) {
-      Object error = _cancellations[context.id];
-      _interceptorManager.interceptOutgoingCanceled(this, context, error);
-      _cleanup(context);
-      throw error;
-    }
-  }
-
-  void _cleanup(HttpContext context) {
-    if (context.meta['state'] != States.canceled) {
-      context.meta['state'] = States.complete;
-    }
-    if (_contexts.containsKey(context.id)) {
-      _contexts.remove(context.id);
-    }
-    if (_cancellations.containsKey(context.id)) {
-      _cancellations.remove(context.id);
-    }
-  }
-
   Future<bool> _isRetryable(HttpContext context) async {
     var result = _retryWhen(context);
     if (result is Future) {
@@ -391,11 +392,14 @@ class HttpProvider extends Provider with FluriMixin {
 /// [HttpProvider] instance fails to complete successfully
 /// in the maximum allowed number of retry attempts.
 class MaxRetryAttemptsExceeded implements Exception {
+  final List<Object> errors;
+  final String _message;
+
   MaxRetryAttemptsExceeded(this._message, [List errors])
       : this.errors = errors != null ? errors : [];
-  final List<Object> errors;
+
   String get message => toString();
-  final String _message;
+
   String toString() {
     String msg = _message;
     for (int i = 0; i < errors.length; i++) {
