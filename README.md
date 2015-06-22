@@ -1,4 +1,4 @@
-w_service (Dart)
+w_service (Dart) [![Build Status](https://travis-ci.org/Workiva/w_service.svg?branch=master)](https://travis-ci.org/Workiva/w_service)
 ================
 
 > Platform agnostic library for sending and receiving data messages between an application and a server with the ability to shape traffic and transform data through the use of message interceptors.
