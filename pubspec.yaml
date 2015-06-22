@@ -11,7 +11,7 @@ dependencies:
   fluri: '>=1.0.0 <2.0.0'
   w_transport:
     git:
-      url: git+ssh://git@github.com/Workiva/w_transport.git
+      url: https://github.com/Workiva/w_transport.git
       ref: master
 #  w_transport: '>=1.0.0 <2.0.0'
 dev_dependencies:
