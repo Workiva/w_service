@@ -68,9 +68,6 @@ class HttpProvider extends Provider with FluriMixin {
   /// **Note:** this only has an effect client-side.
   bool withCredentials = false;
 
-  /// Cancellation errors keyed by request ID.
-  Map<String, dynamic> _cancellations = {};
-
   /// Request contexts keyed by request ID.
   Map<String, HttpContext> _contexts = {};
 
@@ -88,10 +85,9 @@ class HttpProvider extends Provider with FluriMixin {
 
   /// Test function that helps determine whether or not a failed
   /// request is retryable.
-  Function _retryWhen = (HttpContext context) =>
-      (context.meta.containsKey('retryable') && context.meta['retryable']) ||
-          (context.response != null &&
-              [500, 502].contains(context.response.status));
+  Function _retryWhen = (HttpContext context) => context.retryable ||
+      (context.response != null &&
+          [500, 502].contains(context.response.status));
 
   /// Whether or not automatic request retrying is enabled.
   bool _shouldRetry = false;
@@ -152,9 +148,10 @@ class HttpProvider extends Provider with FluriMixin {
   ///
   /// By default, the following criteria is used:
   ///
-  ///     (HttpContext context)
-  ///         => (context.meta.containsKey('retryable') && context.meta['retryable'])
-  ///            || (context.response != null && [500, 502].contains(context.response.status));
+  ///     (HttpContext context) =>
+  ///         context.retryable ||
+  ///             (context.response != null &&
+  ///                 [500, 502].contains(context.response.status));
   void retryWhen(test(HttpContext context)) {
     _retryWhen = test;
   }
@@ -210,12 +207,19 @@ class HttpProvider extends Provider with FluriMixin {
     if (reqUri == null || reqUri.toString() == '') throw new StateError(
         'HttpProvider: Cannot send a request without a URI.');
 
+    // If this is a retry, there will be a previous request stored in the meta.
+    HttpContext previousAttempt =
+        meta.containsKey('previousAttempt') ? meta['previousAttempt'] : null;
+
     // Initialize the request context.
-    HttpContext context = httpContextFactory();
-    _contexts[context.id] = context;
-    context.meta = this.meta;
-    context.meta['state'] = States.pending;
-    context.meta['method'] = method;
+    int numAttempts =
+        previousAttempt != null ? previousAttempt.numAttempts + 1 : 0;
+    HttpContext context = httpContextFactory(method,
+        numAttempts: numAttempts, retryEnabled: _shouldRetry)..meta = this.meta;
+
+    if (previousAttempt != null) {
+      context.retryErrors = new List.from(previousAttempt.retryErrors);
+    }
 
     context.request = _http.newRequest()
       ..uri = Uri.parse(reqUri.toString())
@@ -223,54 +227,33 @@ class HttpProvider extends Provider with FluriMixin {
       ..headers = new Map.from(this.headers);
 
     context.request.data = data != null ? data : this.data;
-    ;
 
     if (this.withCredentials) {
       context.request.withCredentials = true;
     }
 
-    // Initialize/update the retryable meta info if applicable.
-    bool isRetryable = context.meta.containsKey('retry-enabled') &&
-        context.meta['retry-enabled'];
-    if (_shouldRetry && !isRetryable) {
-      context.meta['retry-enabled'] = true;
-      context.meta['attempts'] = 0;
-    } else if (isRetryable) {
-      context.meta['attempts']++;
-    }
+    _contexts[context.id] = context;
 
     this.data = null;
     this.meta = {};
     this.query = null;
     this.fragment = null;
 
-    void abort([error]) {
-      context.meta['state'] = States.canceled;
-      this._cancellations[context.id] = error;
-      context.request.abort(error);
-    }
-    context.abort = abort;
-
     // Bail if the request has exceeded the maximum number of attempts.
-    if (isRetryable && context.meta['attempts'] >= _maxRetryAttempts) {
+    if (context.retryEnabled && context.numAttempts >= _maxRetryAttempts) {
       _cleanup(context);
       Future future = new Future.error(new MaxRetryAttemptsExceeded(
           'Retry attempts exceeded maximum of $_maxRetryAttempts',
-          context.meta['retryErrors']));
-      return httpFutureFactory(future, abort, context.request.uploadProgress,
-          context.request.downloadProgress);
+          context.retryErrors));
+      return httpFutureFactory(future, context.cancelRequest,
+          context.request.uploadProgress, context.request.downloadProgress);
     }
 
     Future<WResponse> future = _dispatch(method, context)
         .catchError((error) async {
-      if (context.meta.containsKey('retry-enabled') &&
-          context.meta['retry-enabled'] &&
-          await _isRetryable(context)) {
+      if (context.retryEnabled && await _isRetryable(context)) {
         // Store the error so a collective error can be created later.
-        if (!context.meta.containsKey('retryErrors')) {
-          context.meta['retryErrors'] = [];
-        }
-        context.meta['retryErrors'].add(error);
+        context.retryErrors.add(error);
         // Attempt a retry before giving up.
         context.response = await _retry(context);
         // Retry eventually succeeded.
@@ -285,28 +268,25 @@ class HttpProvider extends Provider with FluriMixin {
       _cleanup(context);
       throw error;
     }).then((HttpContext context) async => context.response);
-    return httpFutureFactory(future, abort, context.request.uploadProgress,
-        context.request.downloadProgress);
+    return httpFutureFactory(future, context.cancelRequest,
+        context.request.uploadProgress, context.request.downloadProgress);
   }
 
   void _checkForCancellation(HttpContext context) {
-    if (context.meta['state'] == States.canceled) {
-      Object error = _cancellations[context.id];
-      _interceptorManager.interceptOutgoingCanceled(this, context, error);
+    if (context.state == States.canceled) {
+      _interceptorManager.interceptOutgoingCanceled(
+          this, context, context.cancellationError);
       _cleanup(context);
-      throw error;
+      throw context.cancellationError;
     }
   }
 
   void _cleanup(HttpContext context) {
-    if (context.meta['state'] != States.canceled) {
-      context.meta['state'] = States.complete;
+    if (context.state != States.canceled) {
+      context.state = States.complete;
     }
     if (_contexts.containsKey(context.id)) {
       _contexts.remove(context.id);
-    }
-    if (_cancellations.containsKey(context.id)) {
-      _cancellations.remove(context.id);
     }
   }
 
@@ -343,7 +323,7 @@ class HttpProvider extends Provider with FluriMixin {
         request = context.request.trace();
         break;
     }
-    context.meta['state'] = States.sent;
+    context.state = States.sent;
 
     // Receive response.
     Object error;
@@ -377,6 +357,7 @@ class HttpProvider extends Provider with FluriMixin {
       ..headers = context.request.headers
       ..meta = context.meta
       ..uri = context.request.uri;
+    retryFork.meta['previousAttempt'] = context;
 
     switch (context.request.method) {
       case 'DELETE':
@@ -411,8 +392,6 @@ class MaxRetryAttemptsExceeded implements Exception {
 
   MaxRetryAttemptsExceeded(this._message, [List errors])
       : this.errors = errors != null ? errors : [];
-
-  String get message => toString();
 
   String toString() {
     String msg = _message;

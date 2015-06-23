@@ -554,8 +554,8 @@ void main() {
         MaxRetryAttemptsExceeded exception = await expectThrowsAsync(() async {
           await provider.get();
         });
-        expect(exception.message.contains('Failed 1'), isTrue);
-        expect(exception.message.contains('Failed 2'), isTrue);
+        expect(exception.toString(), contains('Failed 1'));
+        expect(exception.toString(), contains('Failed 2'));
       });
 
       test('should retry 500 errors by default', () async {
@@ -620,13 +620,17 @@ void main() {
         expect(requests.length, equals(2));
       });
 
-      test(
-          'should retry errors that have the `retryable` meta flag set to true',
+      test('should retry errors that have the `retryable` flag set to true',
           () async {
+        CustomTestInterceptor int = new CustomTestInterceptor(
+            onOutgoing: (provider, context) {
+          context.retryable = true;
+          return context;
+        });
         mockHttp.autoFlush = false;
         provider
           ..autoRetry()
-          ..meta['retryable'] = true;
+          ..use(int);
 
         bool failed = false;
         mockHttp.requests.listen((MockWRequest request) {

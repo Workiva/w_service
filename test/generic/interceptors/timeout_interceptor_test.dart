@@ -39,10 +39,7 @@ void main() {
 
       setUp(() {
         headers = {};
-        context = httpContextFactory();
-        context.abort = ([error]) {
-          context.request.abort(error);
-        };
+        context = httpContextFactory('GET');
         context.request = new MockWRequest();
         context.response = new MockWResponse();
         when(context.request.headers).thenReturn(headers);
