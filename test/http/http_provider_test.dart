@@ -58,6 +58,80 @@ void main() {
       });
     });
 
+    group('per request headers that do not persist', () {
+      Map headers;
+      Map perReqHeaders;
+      Map mergedHeaders;
+
+      setUp(() {
+        headers = {'content-type': 'application/json', 'content-length': '100'};
+        perReqHeaders = {'content-length': '50', 'x-custom': 'custom'};
+        mergedHeaders = {
+          'content-type': 'application/json',
+          'content-length': '50',
+          'x-custom': 'custom'
+        };
+
+        provider.headers = headers;
+      });
+
+      test('DELETE', () async {
+        await provider.delete(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.delete();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('HEAD', () async {
+        await provider.head(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.head();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('GET', () async {
+        await provider.get(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.get();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('OPTIONS', () async {
+        await provider.options(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.options();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('PATCH', () async {
+        await provider.patch(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.patch();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('POST', () async {
+        await provider.post(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.post();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('PUT', () async {
+        await provider.put(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.put();
+        expect(requests.last.headers, equals(headers));
+      });
+
+      test('TRACE', () async {
+        await provider.trace(headers: perReqHeaders);
+        expect(requests.single.headers, equals(mergedHeaders));
+        await provider.trace();
+        expect(requests.last.headers, equals(headers));
+      });
+    });
+
     group('request data', () {
       setUp(() {
         provider.data = 'data';
@@ -166,7 +240,7 @@ void main() {
 
       test('should accept a URI', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.delete(uri);
+        await provider.delete(uri: uri);
         verify(requests.single.uri = uri);
       });
     });
@@ -179,7 +253,7 @@ void main() {
 
       test('should accept a URI', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.get(uri);
+        await provider.get(uri: uri);
         verify(requests.single.uri = uri);
       });
     });
@@ -192,7 +266,7 @@ void main() {
 
       test('should accept a URI', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.head(uri);
+        await provider.head(uri: uri);
         verify(requests.single.uri = uri);
       });
     });
@@ -205,7 +279,7 @@ void main() {
 
       test('should accept a URI', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.options(uri);
+        await provider.options(uri: uri);
         verify(requests.single.uri = uri);
       });
     });
@@ -218,7 +292,7 @@ void main() {
 
       test('should accept a URI and data', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.patch(uri, 'data');
+        await provider.patch(data: 'data', uri: uri);
         verify(requests.single.uri = uri);
         verify(requests.single.data = 'data');
       });
@@ -232,7 +306,7 @@ void main() {
 
       test('should accept a URI and data', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.post(uri, 'data');
+        await provider.post(data: 'data', uri: uri);
         verify(requests.single.uri = uri);
         verify(requests.single.data = 'data');
       });
@@ -246,7 +320,7 @@ void main() {
 
       test('should accept a URI and data', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.put(uri, 'data');
+        await provider.put(data: 'data', uri: uri);
         verify(requests.single.uri = uri);
         verify(requests.single.data = 'data');
       });
@@ -260,14 +334,14 @@ void main() {
 
       test('should accept a URI', () async {
         Uri uri = Uri.parse('example.org/path');
-        await provider.trace(uri);
+        await provider.trace(uri: uri);
         verify(requests.single.uri = uri);
       });
     });
 
     test('sending a request with a URI should not persist URI', () async {
       Uri uri = Uri.parse('example.org/path');
-      await provider.get(uri);
+      await provider.get(uri: uri);
       verify(requests.single.uri = uri);
       expect(provider.uri.toString() != uri.toString(), isTrue);
     });

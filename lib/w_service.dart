@@ -17,7 +17,6 @@
 /// traffic and transform data through the use of message interceptors.
 library w_service;
 
-// TODO: Fix relative imports to use package syntax
 // w_transport classes.
 export 'package:w_transport/w_transport.dart' show WRequest, WResponse;
 
