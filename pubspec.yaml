@@ -8,23 +8,11 @@ authors:
   - Trent Grover <trent.grover@workiva.com>
 homepage: https://github.com/Workiva/w_service
 dependencies:
-  fluri: '>=1.0.0 <2.0.0'
-  w_transport:
-    git:
-      url: https://github.com/Workiva/w_transport.git
-      ref: master
-#  w_transport: '>=1.0.0 <2.0.0'
+  fluri: "^1.0.1"
+  w_transport: "^1.0.1"
 dev_dependencies:
-  browser: '>=0.10.0+2 <0.11.0'
-  coverage:
-    git:
-      url: https://github.com/ekweible/coverage.git
-      ref: 796a265
-  dart_codecov_generator:
-    git:
-      url: https://github.com/ekweible/dart_codecov_generator.git
-      ref: 0.3.0
-  dart_style: '>=0.1.8 <0.2.0'
-  mockito: '>=0.10.0 <0.11.0'
-  react: '>=0.7.0 <0.8.0'
-  test: '>=0.12.0 <0.12.3'
+  browser: "^0.10.0+2"
+  dart_style: "^0.1.8"
+  mockito: "^0.10.0"
+  react: "^0.7.0"
+  test: "^0.12.3+2"
