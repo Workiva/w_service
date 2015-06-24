@@ -18,7 +18,8 @@
 library w_service;
 
 // w_transport classes.
-export 'package:w_transport/w_transport.dart' show WRequest, WResponse;
+export 'package:w_transport/w_transport.dart'
+    show WHttpException, WRequest, WResponse;
 
 // Generic classes.
 export 'package:w_service/src/generic/context.dart' show Context;
