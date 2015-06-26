@@ -8,11 +8,11 @@ authors:
   - Trent Grover <trent.grover@workiva.com>
 homepage: https://github.com/Workiva/w_service
 dependencies:
-  fluri: "^1.0.1"
-  w_transport: "^1.0.1"
+  fluri: ">=1.0.1 <2.0.0"
+  w_transport: ">=1.0.1 <2.0.0"
 dev_dependencies:
-  browser: "^0.10.0+2"
-  dart_style: "^0.1.8"
-  mockito: "^0.10.0"
-  react: "^0.7.0"
-  test: "^0.12.3+2"
+  browser: ">=0.10.0+2 <0.11.0"
+  dart_style: ">=0.1.8 <0.2.0"
+  mockito: ">=0.10.0 <0.11.0"
+  react: ">=0.7.0 <0.8.0"
+  test: ">=0.12.3+2 <0.13.0"
