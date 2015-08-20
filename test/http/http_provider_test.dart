@@ -230,6 +230,20 @@ void main() {
         fork.use(new SimpleTestInterceptor());
         expect(fork.interceptors.last != provider.interceptors.single, isTrue);
       });
+
+      group('should set withCredentials', () {
+        test('to false when provider\'s withCredentials is false', () {
+          provider.withCredentials = false;
+          HttpProvider fork = provider.fork();
+          expect(fork.withCredentials, isFalse);
+        });
+
+        test('to true when provider\'s withCredentials is true', () {
+          provider.withCredentials = true;
+          HttpProvider fork = provider.fork();
+          expect(fork.withCredentials, isTrue);
+        });
+      });
     });
 
     group('delete()', () {
