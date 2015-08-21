@@ -123,14 +123,15 @@ class HttpProvider extends Provider with FluriMixin {
   }
 
   /// Fork this [HttpProvider] instance. The returned fork
-  /// will have the same URI, headers, and will share the
-  /// same interceptors.
+  /// will have the same URI, headers, withCredentials property,
+  /// and will share the same interceptors.
   HttpProvider fork() {
     HttpProvider fork = new HttpProvider(
         http: _http, interceptorManager: _interceptorManager)
       ..useAll(this.interceptors)
       ..uri = this.uri
-      ..headers = new Map.from(this.headers);
+      ..headers = new Map.from(this.headers)
+      ..withCredentials = this.withCredentials;
 
     if (_shouldRetry) {
       fork.autoRetry(retries: _maxRetryAttempts);

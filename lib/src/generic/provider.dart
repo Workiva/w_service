@@ -24,7 +24,7 @@ import 'package:w_service/src/generic/interceptor.dart';
 /// on the `w_service` wiki.
 abstract class Provider {
   /// Unique identifier.
-  String id;
+  final String id;
 
   /// List of registered interceptors. Every interceptor in
   /// this list is applied, in order, on every outgoing and
