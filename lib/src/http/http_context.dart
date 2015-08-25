@@ -28,8 +28,9 @@ const String _idPrefix = 'http-context-';
 /// without allowing new instances of it to be constructed,
 /// since that should not be necessary.
 HttpContext httpContextFactory(String method,
-    {int numAttempts, bool retryEnabled}) => new HttpContext._(method,
-    numAttempts: numAttempts, retryEnabled: retryEnabled);
+        {int numAttempts, bool retryEnabled}) =>
+    new HttpContext._(method,
+        numAttempts: numAttempts, retryEnabled: retryEnabled);
 
 /// Context for service messages sent over HTTP.
 /// In addition to the properties on [Context],

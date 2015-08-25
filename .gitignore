@@ -6,5 +6,4 @@ pubspec.lock
 dartdoc-viewer
 doc/api
 
-coverage.lcov
-coverage_report
+coverage/

@@ -28,6 +28,7 @@ import 'package:w_service/w_service_diagnostic.dart' deferred as diagnostics;
 // TODO: Send data on every request and monitor the # of bytes transferred
 
 var appComponent = react.registerComponent(() => new AppComponent());
+
 class AppComponent extends react.Component {
   Map getDefaultProps() {
     return {
@@ -42,25 +43,32 @@ class AppComponent extends react.Component {
   }
 
   render() {
-    return react.div({'className': 'container-wide'}, [
+    return react.div({
+      'className': 'container-wide'
+    }, [
       react.h1(
           {}, [react.span({}, 'Example: '), react.code({}, 'HttpProvider'),]),
-      react.div({'className': 'row'}, [
-        react.div({'className': 'col-md-12'}, controlComponent({
-          'disableDiagnostics': props['disableDiagnostics'],
-          'enableDiagnostics': props['enableDiagnostics'],
-          'sendRequest': props['sendRequest'],
-          'setHavokPercentage': props['setHavokPercentage'],
-          'setRequestsPerSecond': props['setRequestsPerSecond'],
-          'startRequestStream': props['startRequestStream'],
-          'stopRequestStream': props['stopRequestStream'],
-        })),
+      react.div({
+        'className': 'row'
+      }, [
+        react.div(
+            {'className': 'col-md-12'},
+            controlComponent({
+              'disableDiagnostics': props['disableDiagnostics'],
+              'enableDiagnostics': props['enableDiagnostics'],
+              'sendRequest': props['sendRequest'],
+              'setHavokPercentage': props['setHavokPercentage'],
+              'setRequestsPerSecond': props['setRequestsPerSecond'],
+              'startRequestStream': props['startRequestStream'],
+              'stopRequestStream': props['stopRequestStream'],
+            })),
       ])
     ]);
   }
 }
 
 var controlComponent = react.registerComponent(() => new ControlComponent());
+
 class ControlComponent extends react.Component {
   Map getInitialState() {
     return {'diagnosticsEnabled': false, 'streaming': false};
@@ -81,58 +89,61 @@ class ControlComponent extends react.Component {
   render() {
     var diagnosticsButton;
     if (state['diagnosticsEnabled']) {
-      diagnosticsButton = react.button({
-        'className': 'btn btn-danger',
-        'onClick': _disableDiagnostics
-      }, 'Disable Diagnostics');
+      diagnosticsButton = react.button(
+          {'className': 'btn btn-danger', 'onClick': _disableDiagnostics},
+          'Disable Diagnostics');
     } else {
-      diagnosticsButton = react.button({
-        'className': 'btn btn-success',
-        'onClick': _enableDiagnostics
-      }, 'Enable Diagnostics');
+      diagnosticsButton = react.button(
+          {'className': 'btn btn-success', 'onClick': _enableDiagnostics},
+          'Enable Diagnostics');
     }
 
     var requestStreamButton;
     if (state['streaming']) {
-      requestStreamButton = react.button({
-        'className': 'btn btn-danger',
-        'onClick': _stopRequestStream
-      }, 'Stop Request Stream');
+      requestStreamButton = react.button(
+          {'className': 'btn btn-danger', 'onClick': _stopRequestStream},
+          'Stop Request Stream');
     } else {
-      requestStreamButton = react.button({
-        'className': 'btn btn-success',
-        'onClick': _startRequestStream
-      }, 'Start Request Stream');
+      requestStreamButton = react.button(
+          {'className': 'btn btn-success', 'onClick': _startRequestStream},
+          'Start Request Stream');
     }
 
-    return react.div({'className': 'controls'}, react.form({
-      'className': 'form-inline'
-    }, react.fieldset({}, [
-      react.div({'className': 'form-group'}, diagnosticsButton),
-      react.div({'className': 'form-group'}, react.button({
-        'className': 'btn btn-default',
-        'onClick': _sendRequest
-      }, 'Single Request')),
-      react.div({'className': 'form-group'}, requestStreamButton),
-      react.div({'className': 'form-group'}, [
-        react.label({'htmlFor': 'rps'}, 'RPS'),
-        react.input({
-          'className': 'form-control',
-          'id': 'rps',
-          'onChange': _setRequestsPerSecond,
-          'placeholder': 'requests per second'
-        }),
-      ]),
-      react.div({'className': 'form-group'}, [
-        react.label({'htmlFor': 'havok'}, 'Havok'),
-        react.input({
-          'className': 'form-control',
-          'id': 'havok',
-          'onChange': _setHavokPercentage,
-          'placeholder': '% of requests to error (0-100)'
-        }),
-      ]),
-    ])));
+    return react.div(
+        {'className': 'controls'},
+        react.form(
+            {'className': 'form-inline'},
+            react.fieldset({}, [
+              react.div({'className': 'form-group'}, diagnosticsButton),
+              react.div(
+                  {'className': 'form-group'},
+                  react.button(
+                      {'className': 'btn btn-default', 'onClick': _sendRequest},
+                      'Single Request')),
+              react.div({'className': 'form-group'}, requestStreamButton),
+              react.div({
+                'className': 'form-group'
+              }, [
+                react.label({'htmlFor': 'rps'}, 'RPS'),
+                react.input({
+                  'className': 'form-control',
+                  'id': 'rps',
+                  'onChange': _setRequestsPerSecond,
+                  'placeholder': 'requests per second'
+                }),
+              ]),
+              react.div({
+                'className': 'form-group'
+              }, [
+                react.label({'htmlFor': 'havok'}, 'Havok'),
+                react.input({
+                  'className': 'form-control',
+                  'id': 'havok',
+                  'onChange': _setHavokPercentage,
+                  'placeholder': '% of requests to error (0-100)'
+                }),
+              ]),
+            ])));
   }
 
   _disableDiagnostics(e) {
@@ -266,15 +277,17 @@ void main() {
     requestStream.cancel();
   }
 
-  react.render(appComponent({
-    'disableDiagnostics': disableDiagnostics,
-    'enableDiagnostics': enableDiagnostics,
-    'sendRequest': sendRequest,
-    'setHavokPercentage': setHavokPercentage,
-    'setRequestsPerSecond': setRequestsPerSecond,
-    'startRequestStream': startRequestStream,
-    'stopRequestStream': stopRequestStream,
-  }), querySelector('#app'));
+  react.render(
+      appComponent({
+        'disableDiagnostics': disableDiagnostics,
+        'enableDiagnostics': enableDiagnostics,
+        'sendRequest': sendRequest,
+        'setHavokPercentage': setHavokPercentage,
+        'setRequestsPerSecond': setRequestsPerSecond,
+        'startRequestStream': startRequestStream,
+        'stopRequestStream': stopRequestStream,
+      }),
+      querySelector('#app'));
 
   HttpRequest.request('http://localhost:8024', method: 'GET');
 }

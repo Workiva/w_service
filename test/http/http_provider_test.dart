@@ -219,8 +219,10 @@ void main() {
         HttpProvider fork = provider.fork();
         expect(fork.headers.toString(), equals(provider.headers.toString()));
         fork.headers['Content-Length'] = '-1';
-        expect(fork.headers['Content-Length'] !=
-            provider.headers['Content-Length'], isTrue);
+        expect(
+            fork.headers['Content-Length'] !=
+                provider.headers['Content-Length'],
+            isTrue);
       });
 
       test('should share the same interceptors', () {
@@ -710,8 +712,8 @@ void main() {
 
       test('should retry errors that have the `retryable` flag set to true',
           () async {
-        CustomTestInterceptor int = new CustomTestInterceptor(
-            onOutgoing: (provider, context) {
+        CustomTestInterceptor int =
+            new CustomTestInterceptor(onOutgoing: (provider, context) {
           context.retryable = true;
           return context;
         });

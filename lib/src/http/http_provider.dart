@@ -108,6 +108,7 @@ class HttpProvider extends Provider with FluriMixin {
     }
     _meta = meta;
   }
+
   Map<String, dynamic> get meta => _meta;
 
   /// Enables automatic request retrying. Will retry failed requests
@@ -126,12 +127,12 @@ class HttpProvider extends Provider with FluriMixin {
   /// will have the same URI, headers, withCredentials property,
   /// and will share the same interceptors.
   HttpProvider fork() {
-    HttpProvider fork = new HttpProvider(
-        http: _http, interceptorManager: _interceptorManager)
-      ..useAll(this.interceptors)
-      ..uri = this.uri
-      ..headers = new Map.from(this.headers)
-      ..withCredentials = this.withCredentials;
+    HttpProvider fork =
+        new HttpProvider(http: _http, interceptorManager: _interceptorManager)
+          ..useAll(this.interceptors)
+          ..uri = this.uri
+          ..headers = new Map.from(this.headers)
+          ..withCredentials = this.withCredentials;
 
     if (_shouldRetry) {
       fork.autoRetry(retries: _maxRetryAttempts);
@@ -167,6 +168,7 @@ class HttpProvider extends Provider with FluriMixin {
   HttpFuture<WResponse> delete({Map<String, String> headers, Uri uri}) {
     return _send('DELETE', headers: headers, uri: uri);
   }
+
   /// Sends a GET request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -177,6 +179,7 @@ class HttpProvider extends Provider with FluriMixin {
   HttpFuture<WResponse> get({Map<String, String> headers, Uri uri}) {
     return _send('GET', headers: headers, uri: uri);
   }
+
   /// Sends a HEAD request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -187,6 +190,7 @@ class HttpProvider extends Provider with FluriMixin {
   HttpFuture<WResponse> head({Map<String, String> headers, Uri uri}) {
     return _send('HEAD', headers: headers, uri: uri);
   }
+
   /// Sends an OPTIONS request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -197,6 +201,7 @@ class HttpProvider extends Provider with FluriMixin {
   HttpFuture<WResponse> options({Map<String, String> headers, Uri uri}) {
     return _send('OPTIONS', headers: headers, uri: uri);
   }
+
   /// Sends a PATCH request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -210,6 +215,7 @@ class HttpProvider extends Provider with FluriMixin {
       {Object data, Map<String, String> headers, Uri uri}) {
     return _send('PATCH', data: data, headers: headers, uri: uri);
   }
+
   /// Sends a POST request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -223,6 +229,7 @@ class HttpProvider extends Provider with FluriMixin {
       {Object data, Map<String, String> headers, Uri uri}) {
     return _send('POST', data: data, headers: headers, uri: uri);
   }
+
   /// Sends a PUT request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -236,6 +243,7 @@ class HttpProvider extends Provider with FluriMixin {
       {Object data, Map<String, String> headers, Uri uri}) {
     return _send('PUT', data: data, headers: headers, uri: uri);
   }
+
   /// Sends a TRACE request to the given [uri].
   ///
   /// If [uri] is null, the uri on this [HttpProvider] will be used.
@@ -302,8 +310,8 @@ class HttpProvider extends Provider with FluriMixin {
           context.request.uploadProgress, context.request.downloadProgress);
     }
 
-    Future<WResponse> future = _dispatch(method, context)
-        .catchError((error) async {
+    Future<WResponse> future =
+        _dispatch(method, context).catchError((error) async {
       if (context.retryEnabled && await _isRetryable(context)) {
         // Store the error so a collective error can be created later.
         context.retryErrors.add(error);

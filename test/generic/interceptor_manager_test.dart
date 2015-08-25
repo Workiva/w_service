@@ -57,8 +57,8 @@ void main() {
       });
 
       test('should throw with the error if interceptor throws', () async {
-        CustomTestInterceptor testInt = new CustomTestInterceptor(
-            onOutgoing: (provider, context) {
+        CustomTestInterceptor testInt =
+            new CustomTestInterceptor(onOutgoing: (provider, context) {
           throw new Exception('Rejected.');
         });
         provider.use(testInt);
@@ -94,8 +94,8 @@ void main() {
       });
 
       test('should allow modification of the context', () async {
-        CustomTestInterceptor testInt = new CustomTestInterceptor(
-            onOutgoing: (provider, context) async {
+        CustomTestInterceptor testInt =
+            new CustomTestInterceptor(onOutgoing: (provider, context) async {
           context.meta['modified'] = true;
           return context;
         });
@@ -105,8 +105,8 @@ void main() {
       });
 
       test('should allow replacement of the context', () async {
-        CustomTestInterceptor testInt = new CustomTestInterceptor(
-            onOutgoing: (provider, context) async {
+        CustomTestInterceptor testInt =
+            new CustomTestInterceptor(onOutgoing: (provider, context) async {
           return new TestContext();
         });
         provider.use(testInt);
@@ -115,8 +115,8 @@ void main() {
       });
 
       test('should throw if 1 interceptor throws', () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onOutgoing: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onOutgoing: (provider, context) async {
           throw new Exception('Rejected.');
         });
         provider.use(rejector);
@@ -129,8 +129,8 @@ void main() {
       test(
           'should throw if first of 2 intercepors throws; second not called, both onOutgoingCanceled() called',
           () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onOutgoing: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onOutgoing: (provider, context) async {
           throw new Exception('Rejected.');
         });
         SimpleTestInterceptor second = new SimpleTestInterceptor();
@@ -166,8 +166,8 @@ void main() {
       test('should throw if first of 2 interceptors complete but second throws',
           () async {
         SimpleTestInterceptor first = new SimpleTestInterceptor();
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onOutgoing: (provider, context) {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onOutgoing: (provider, context) {
           throw new Exception('Rejected.');
         });
         MockSimpleTestInterceptor firstSpy =
@@ -188,8 +188,8 @@ void main() {
           () async {
         Exception exception = new Exception('Rejected.');
         SimpleTestInterceptor first = new SimpleTestInterceptor();
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onOutgoing: (provider, context) {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onOutgoing: (provider, context) {
           throw exception;
         });
         MockSimpleTestInterceptor firstSpy =
@@ -252,8 +252,8 @@ void main() {
       });
 
       test('should allow modification of the context', () async {
-        CustomTestInterceptor testInt = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor testInt =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           context.meta['modified'] = true;
           return context;
         });
@@ -263,8 +263,8 @@ void main() {
       });
 
       test('should allow modification of the context when rejecting', () async {
-        CustomTestInterceptor modifier = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor modifier =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           context.meta['modified'] = true;
           throw new Exception('Rejected.');
         });
@@ -278,8 +278,8 @@ void main() {
       test('should allow modification of the context when recovering',
           () async {
         bool rejected = false;
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           if (!rejected) {
             rejected = true;
             throw new Exception('Rejected.');
@@ -298,8 +298,8 @@ void main() {
 
       test('should allow modification of the context when re-throwing',
           () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) {
           throw new Exception('Rejected.');
         });
         CustomTestInterceptor modifier = new CustomTestInterceptor(
@@ -315,8 +315,8 @@ void main() {
       });
 
       test('should allow replacement of the context', () async {
-        CustomTestInterceptor testInt = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor testInt =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           return new TestContext();
         });
         provider.use(testInt);
@@ -325,8 +325,8 @@ void main() {
       });
 
       test('should throw if 1 interceptor throws', () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
         provider.use(rejector);
@@ -337,8 +337,8 @@ void main() {
       });
 
       test('should throw if 1 interceptor rejects', () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
         provider.use(rejector);
@@ -360,8 +360,8 @@ void main() {
       test('should throw if 1 interceptor throws and no interceptors recover',
           () async {
         SimpleTestInterceptor first = new SimpleTestInterceptor();
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
         MockSimpleTestInterceptor mockFirst =
@@ -386,8 +386,8 @@ void main() {
           () async {
         SimpleTestInterceptor first = new SimpleTestInterceptor();
         SimpleTestInterceptor second = new SimpleTestInterceptor();
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
 
@@ -413,8 +413,8 @@ void main() {
           'should restart interceptor chain when switching back from rejected to standard',
           () async {
         bool rejected = false;
-        CustomTestInterceptor rejectOnce = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejectOnce =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           if (!rejected) {
             rejected = true;
             throw new Exception('Rejected.');
@@ -469,8 +469,8 @@ void main() {
           'should call all onIncomingFinal() methods after the context is finalized (successfully)',
           () async {
         bool rejected = false;
-        CustomTestInterceptor rejectOnce = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejectOnce =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           if (!rejected) {
             rejected = true;
             throw new Exception('Rejected.');
@@ -504,8 +504,8 @@ void main() {
           'should call all onIncomingFinal() methods after the context is finalized (rejected)',
           () async {
         Exception exception = new Exception('Rejected.');
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw exception;
         });
         SimpleTestInterceptor second = new SimpleTestInterceptor();
@@ -541,8 +541,8 @@ void main() {
 
       test('should not allow the interceptor chain cycle to exceed 10 attempts',
           () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
         CustomTestInterceptor recoverer = new CustomTestInterceptor(
@@ -558,16 +558,18 @@ void main() {
         });
 
         verify(rejectorSpy.onIncoming(provider, context)).called(10);
-        expect(exception
-            .toString()
-            .contains('attempts exceeded while intercepting'), isTrue);
+        expect(
+            exception
+                .toString()
+                .contains('attempts exceeded while intercepting'),
+            isTrue);
       });
 
       test(
           'should allow the max number of interceptor chain cycle attempts to be configurable',
           () async {
-        CustomTestInterceptor rejector = new CustomTestInterceptor(
-            onIncoming: (provider, context) async {
+        CustomTestInterceptor rejector =
+            new CustomTestInterceptor(onIncoming: (provider, context) async {
           throw new Exception('Rejected.');
         });
         CustomTestInterceptor recoverer = new CustomTestInterceptor(
@@ -584,9 +586,11 @@ void main() {
         });
 
         verify(rejectorSpy.onIncoming(provider, context)).called(4);
-        expect(exception
-            .toString()
-            .contains('attempts exceeded while intercepting'), isTrue);
+        expect(
+            exception
+                .toString()
+                .contains('attempts exceeded while intercepting'),
+            isTrue);
       });
 
       test(

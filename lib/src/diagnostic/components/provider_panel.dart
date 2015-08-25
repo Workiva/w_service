@@ -25,6 +25,7 @@ import 'package:w_service/src/diagnostic/provider_diagnostics.dart'
 import 'package:w_service/w_service.dart';
 
 var ProviderPanel = react.registerComponent(() => new _ProviderPanel());
+
 class _ProviderPanel extends react.Component {
   bool get controllable => state['controllable'];
   Diagnostics get diagnostics => props['diagnostics'];
@@ -32,11 +33,11 @@ class _ProviderPanel extends react.Component {
   ProviderDiagnostics get providerDiagnostics => props['providerDiagnostics'];
 
   getDefaultProps() => {
-    'diagnostics': null,
-    'onAdvanceMessage': (_) {},
-    'onExpandMessage': (_) {},
-    'providerDiagnostics': null
-  };
+        'diagnostics': null,
+        'onAdvanceMessage': (_) {},
+        'onExpandMessage': (_) {},
+        'providerDiagnostics': null
+      };
 
   getInitialState() => {'controllable': false};
 
@@ -44,7 +45,9 @@ class _ProviderPanel extends react.Component {
     if (diagnostics == null || providerDiagnostics == null) return '';
     var controls = react.div({}, [
       react.fieldset({}, [
-        react.label({'for': '${providerDiagnostics.provider.id}-controlled'}, [
+        react.label({
+          'for': '${providerDiagnostics.provider.id}-controlled'
+        }, [
           react.input(
               {'type': 'checkbox', 'onChange': _toggleControlledRequests}),
           react.span({}, 'Control Messages')
@@ -76,8 +79,8 @@ class _ProviderPanel extends react.Component {
   _renderIncomingStandardSection() {
     var rows = {};
     providerDiagnostics.provider.interceptors.forEach((interceptor) {
-      rows[interceptor.id] = diagnostics.messageMap.messagesAt(
-          providerDiagnostics.provider, interceptor, 'incoming');
+      rows[interceptor.id] = diagnostics.messageMap
+          .messagesAt(providerDiagnostics.provider, interceptor, 'incoming');
     });
     return MessageSection({
       'controllable': controllable,
@@ -106,8 +109,8 @@ class _ProviderPanel extends react.Component {
   _renderOutgoingSection() {
     var rows = {};
     providerDiagnostics.provider.interceptors.forEach((interceptor) {
-      rows[interceptor.id] = diagnostics.messageMap.messagesAt(
-          providerDiagnostics.provider, interceptor, 'outgoing');
+      rows[interceptor.id] = diagnostics.messageMap
+          .messagesAt(providerDiagnostics.provider, interceptor, 'outgoing');
     });
     return MessageSection({
       'controllable': controllable,
@@ -140,6 +143,7 @@ class _ProviderPanel extends react.Component {
 }
 
 var MessageSection = react.registerComponent(() => new _MessageSection());
+
 class _MessageSection extends react.Component {
   bool get controllable => props['controllable'];
   Function get onAdvanceMessage => props['onAdvanceMessage'];
@@ -148,31 +152,33 @@ class _MessageSection extends react.Component {
   String get title => props['title'];
 
   getDefaultProps() => {
-    'controllable': false,
-    'onAdvanceMessage': (_) {},
-    'onExpandMessage': (_) {},
-    'rows': [],
-    'title': ''
-  };
+        'controllable': false,
+        'onAdvanceMessage': (_) {},
+        'onExpandMessage': (_) {},
+        'rows': [],
+        'title': ''
+      };
 
   render() {
     var rowNodes = [];
     rows.forEach((row, messages) {
       rowNodes.add(react.div({}, [
         react.div({'className': 'wsdp-message-sub-section'}, row),
-        react.div({
-          'className': 'wsdp-message-sub-section-messages'
-        }, messages.map((context) => Message({
-          'context': context,
-          'controllable': controllable,
-          'onAdvance': onAdvanceMessage,
-          'onExpand': onExpandMessage
-        }))),
+        react.div(
+            {'className': 'wsdp-message-sub-section-messages'},
+            messages.map((context) => Message({
+                  'context': context,
+                  'controllable': controllable,
+                  'onAdvance': onAdvanceMessage,
+                  'onExpand': onExpandMessage
+                }))),
         react.div({'className': 'wsdp-clear'})
       ]));
     });
 
-    return react.div({'className': 'wsdp-message-section'}, [
+    return react.div({
+      'className': 'wsdp-message-section'
+    }, [
       react.div(
           {'className': 'wsdp-message-section-title'}, react.strong({}, title)),
       react.div({'className': 'wsdp-message-section-content'}, rowNodes)

@@ -93,7 +93,8 @@ class CustomTestInterceptor extends Interceptor {
   Function _onIncomingRejected;
   Function _onIncomingFinal;
 
-  CustomTestInterceptor({onOutgoing(Provider provider, Context context),
+  CustomTestInterceptor(
+      {onOutgoing(Provider provider, Context context),
       onOutgoingCanceled(Provider provider, Context context, Object error),
       onIncoming(Provider provider, Context context),
       onIncomingRejected(Provider provider, Context context, Object error),

@@ -20,6 +20,7 @@ import 'package:w_service/w_service.dart';
 class TestProvider extends Provider {
   TestProvider() : super('test-provider');
 }
+
 class TestInterceptor extends Interceptor {
   TestInterceptor() : super('test-interceptor');
 }
