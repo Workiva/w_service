@@ -1,11 +1,11 @@
 // Copyright 2015 Workiva Inc.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,21 +26,14 @@ String generateCsrfToken() {
 
 void handleRequest(HttpRequest request) {
   request.response.headers.set('Access-Control-Allow-Origin', '*');
-  request.response.headers.set('Access-Control-Allow-Methods', [
-    'DELETE',
-    'GET',
-    'HEAD',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-  ].join(','));
+  request.response.headers.set('Access-Control-Allow-Methods',
+      ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT',].join(','));
   if (request.headers.value('Access-Control-Request-Headers') != null) {
-    request.response.headers.set('Access-Control-Allow-Headers', request.headers.value('Access-Control-Request-Headers'));
+    request.response.headers.set('Access-Control-Allow-Headers',
+        request.headers.value('Access-Control-Request-Headers'));
   }
   request.response.headers.set('Access-Control-Expose-Headers', 'x-xsrf-token');
 
-  String csrf = request.headers.value('x-xsrf-token');
   int havok = request.headers.value('x-havok') != null
       ? int.parse(request.headers.value('x-havok'))
       : 0;
@@ -58,7 +51,8 @@ void handleRequest(HttpRequest request) {
     request.response.close();
   }
 
-  print('[${new DateTime.now().toString()}] ${request.method}\t${request.response.statusCode}\t${request.uri.toString()}');
+  print(
+      '[${new DateTime.now().toString()}] ${request.method}\t${request.response.statusCode}\t${request.uri.toString()}');
 }
 
 void produceError(HttpRequest request) {

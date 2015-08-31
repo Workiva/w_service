@@ -1,5 +1,5 @@
-w_service (Dart) [![Build Status](https://travis-ci.org/Workiva/w_service.svg?branch=master)](https://travis-ci.org/Workiva/w_service)
-================
+# w_service
+[![Pub](https://img.shields.io/pub/v/w_service.svg)](https://pub.dartlang.org/packages/w_service) [![Build Status](https://travis-ci.org/Workiva/w_service.svg?branch=master)](https://travis-ci.org/Workiva/w_service) [![codecov.io](http://codecov.io/github/Workiva/w_service/coverage.svg?branch=master)](http://codecov.io/github/Workiva/w_service?branch=master)
 
 > Platform agnostic library for sending and receiving data messages between an application and a server with the ability to shape traffic and transform data through the use of message interceptors.
 
@@ -55,3 +55,10 @@ void main() {
   configureWServiceForServer();
 }
 ```
+
+## Development
+
+This project leverages [the dart_dev package](https://github.com/Workiva/dart_dev)
+for most of its tooling needs, including static analysis, code formatting,
+running tests, collecting coverage, and serving examples. Check out the dart_dev
+readme for more information.

@@ -37,6 +37,7 @@ class MockWHttp implements WHttp {
     _requestStreamController.add(req);
     return req;
   }
+
   void close() {
     _requestStreamController.close();
   }

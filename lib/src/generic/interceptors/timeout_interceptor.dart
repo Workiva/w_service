@@ -29,7 +29,6 @@ import 'package:w_service/src/http/http_provider.dart';
 /// This interceptor is designed for HTTP requests and only has an
 /// effect when used with the [HttpProvider].
 class TimeoutInterceptor extends Interceptor {
-
   /// Maximum request duration.
   Duration _maxRequestDuration;
 

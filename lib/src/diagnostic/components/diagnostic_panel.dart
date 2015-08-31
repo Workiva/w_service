@@ -37,6 +37,7 @@ import 'package:w_service/src/diagnostic/provider_diagnostics.dart'
 const int _maxTickerMessages = 10;
 
 var DiagnosticPanel = react.registerComponent(() => new _DiagnosticPanel());
+
 class _DiagnosticPanel extends react.Component {
   Diagnostics get diagnostics => props['diagnostics'];
 
@@ -85,13 +86,19 @@ class _DiagnosticPanel extends react.Component {
       }));
     });
 
-    return react.div({'className': 'wsdp'}, [
-      react.style({'dangerouslySetInnerHTML': {'__html': css}}),
-      react.div({'className': 'wsdp-diagnostics'}, CollapsiblePanel({
-        'className': 'main',
-        'title': 'w_service diagnostics',
-        'header': header
-      }, body))
+    return react.div({
+      'className': 'wsdp'
+    }, [
+      react.style({
+        'dangerouslySetInnerHTML': {'__html': css}
+      }),
+      react.div(
+          {'className': 'wsdp-diagnostics'},
+          CollapsiblePanel({
+            'className': 'main',
+            'title': 'w_service diagnostics',
+            'header': header
+          }, body))
     ]);
   }
 
@@ -99,8 +106,8 @@ class _DiagnosticPanel extends react.Component {
     _subscriptions.add(diagnostics.messageMap.stream.listen((messageMap) {
       setState({'messageMap': messageMap});
     }));
-    _subscriptions.add(diagnostics.providerDiagnosticsStream
-        .listen((providerDiagnostics) {
+    _subscriptions.add(
+        diagnostics.providerDiagnosticsStream.listen((providerDiagnostics) {
       setState({'providerDiagnostics': providerDiagnostics});
     }));
   }

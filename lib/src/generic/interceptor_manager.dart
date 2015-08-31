@@ -35,7 +35,6 @@ const int _defaultMaxIncomingInterceptorAttempts = 10;
 /// See the [w_service wiki](https://github.com/Workiva/w_service/wiki/5.-Message-Interception)
 /// for a detailed explanation with diagrams.
 class InterceptorManager {
-
   /// Number of attempts at completing the incoming interceptor
   /// chain for each request context, keyed by context ID.
   Map<String, int> _incomingTries = {};
@@ -50,6 +49,7 @@ class InterceptorManager {
         0) throw new ArgumentError('Maximum interceptor attempts must be > 0');
     _maxIncomingInterceptorAttempts = max;
   }
+
   int get maxIncomingInterceptorAttempts => _maxIncomingInterceptorAttempts;
 
   /// Intercepts an outgoing message, described by [context],
@@ -135,7 +135,7 @@ class InterceptorManager {
     // Fail if number of tries exceeds the maximum.
     if (_incomingTries[context.id] >
         maxIncomingInterceptorAttempts) throw new MaxInterceptorAttemptsExceeded(
-            '${maxIncomingInterceptorAttempts} attempts exceeded while intercepting incoming data.');
+        '${maxIncomingInterceptorAttempts} attempts exceeded while intercepting incoming data.');
 
     // Apply each interceptor in order.
     try {
@@ -167,8 +167,8 @@ class InterceptorManager {
     // Apply each interceptor in order.
     for (int i = 0; i < provider.interceptors.length; i++) {
       try {
-        context = await provider.interceptors[i].onIncomingRejected(
-            provider, context, error);
+        context = await provider.interceptors[i]
+            .onIncomingRejected(provider, context, error);
         // Interceptor recovered from the rejection, so restart at the beginning
         // of the interceptor chain, but call onIncoming() interceptor methods.
         return this.interceptIncomingStandard(provider, context);

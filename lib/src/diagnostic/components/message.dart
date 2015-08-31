@@ -18,6 +18,7 @@ import 'package:react/react.dart' as react;
 import 'package:w_service/w_service.dart';
 
 var Message = react.registerComponent(() => new _Message());
+
 class _Message extends react.Component {
   Context get context => props['context'];
   bool get controllable => props['controllable'];
@@ -34,19 +35,20 @@ class _Message extends react.Component {
     var path = httpContext.request.uri.path;
     return path != null && path != '' ? path : '/';
   }
+
   String get httpResponseData => state['httpResponseData'];
   Function get onAdvance => props['onAdvance'];
   Function get onClose => props['onClose'];
   Function get onExpand => props['onExpand'];
 
   getDefaultProps() => {
-    'context': null,
-    'controllable': false,
-    'detailed': false,
-    'onAdvance': (_) {},
-    'onClose': (_) {},
-    'onExpand': (_) {}
-  };
+        'context': null,
+        'controllable': false,
+        'detailed': false,
+        'onAdvance': (_) {},
+        'onClose': (_) {},
+        'onExpand': (_) {}
+      };
 
   getInitialState() => {'httpResponseData': null};
 
@@ -94,7 +96,9 @@ class _Message extends react.Component {
       statusClass += ' wsdp-failure';
       statusText = '(canceled)';
     }
-    return react.div({'className': 'wsdp-message-status'}, [
+    return react.div({
+      'className': 'wsdp-message-status'
+    }, [
       react.div({'className': statusClass}),
       react.div({'className': 'wsdp-message-status-text'}, statusText)
     ]);
@@ -132,7 +136,10 @@ class _Message extends react.Component {
         ? httpContext.response.headers.toString()
         : '';
     var responseBody = httpResponseData != null
-        ? [react.a({'onClick': _loadResponseData}, 'reload'), httpResponseData]
+        ? [
+            react.a({'onClick': _loadResponseData}, 'reload'),
+            httpResponseData
+          ]
         : react.a({'onClick': _loadResponseData}, 'load');
 
     var error = httpContext.meta['error'] != null
@@ -150,21 +157,30 @@ class _Message extends react.Component {
       })
     ];
 
-    return react.div({'className': 'wsdp-message-detailed'}, [
+    return react.div({
+      'className': 'wsdp-message-detailed'
+    }, [
       react.div({'className': 'wsdp-message-detailed-title'}, title),
-      react.div({
-        'className': 'wsdp-message-detailed-content'
-      }, react.table({}, react.tbody({}, [
-        react.tr({}, [react.td({}, 'provider:'), react.td({}, providerId)]),
-        react.tr({}, [react.td({}, 'uri:'), react.td({}, uri)]),
-        react.tr({}, react.td({}, react.strong({}, 'request'))),
-        react.tr({}, [react.td({}, 'headers:'), react.td({}, requestHeaders)]),
-        react.tr({}, [react.td({}, 'body:'), react.td({}, requestBody)]),
-        react.tr({}, react.td({}, react.strong({}, 'response'))),
-        react.tr({}, [react.td({}, 'headers:'), react.td({}, responseHeaders)]),
-        react.tr({}, [react.td({}, 'body:'), react.td({}, responseBody)]),
-        react.tr({}, [react.td({}, 'error:'), react.td({}, error)])
-      ])))
+      react.div(
+          {'className': 'wsdp-message-detailed-content'},
+          react.table(
+              {},
+              react.tbody({}, [
+                react.tr(
+                    {}, [react.td({}, 'provider:'), react.td({}, providerId)]),
+                react.tr({}, [react.td({}, 'uri:'), react.td({}, uri)]),
+                react.tr({}, react.td({}, react.strong({}, 'request'))),
+                react.tr({},
+                    [react.td({}, 'headers:'), react.td({}, requestHeaders)]),
+                react.tr(
+                    {}, [react.td({}, 'body:'), react.td({}, requestBody)]),
+                react.tr({}, react.td({}, react.strong({}, 'response'))),
+                react.tr({},
+                    [react.td({}, 'headers:'), react.td({}, responseHeaders)]),
+                react.tr(
+                    {}, [react.td({}, 'body:'), react.td({}, responseBody)]),
+                react.tr({}, [react.td({}, 'error:'), react.td({}, error)])
+              ])))
     ]);
   }
 }

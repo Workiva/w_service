@@ -60,11 +60,15 @@ class HttpFuture<T> implements Future<T> {
 
   Future timeout(Duration timeLimit, {onTimeout()}) =>
       new HttpFuture._fromFuture(
-          _future.timeout(timeLimit, onTimeout: onTimeout), _onAbort,
-          uploadProgress, downloadProgress);
+          _future.timeout(timeLimit, onTimeout: onTimeout),
+          _onAbort,
+          uploadProgress,
+          downloadProgress);
 
   Future then(f(T value), {Function onError}) => new HttpFuture._fromFuture(
-      _future.then(f, onError: onError), _onAbort, uploadProgress,
+      _future.then(f, onError: onError),
+      _onAbort,
+      uploadProgress,
       downloadProgress);
 
   Future<T> whenComplete(action()) => new HttpFuture._fromFuture(

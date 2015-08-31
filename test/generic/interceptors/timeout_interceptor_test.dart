@@ -70,9 +70,13 @@ void main() {
           () async {
         await interceptor.onOutgoing(provider, context);
         await new Future.delayed(new Duration(milliseconds: 50));
-        expect(verify(context.request.abort(captureAny)).captured.single
-            .toString()
-            .contains('Timeout threshold'), isTrue);
+        expect(
+            verify(context.request.abort(captureAny))
+                .captured
+                .single
+                .toString()
+                .contains('Timeout threshold'),
+            isTrue);
       });
     });
   });
