@@ -19,6 +19,8 @@ import 'dart:async';
 import 'package:w_service/w_service.dart';
 import 'package:w_transport/w_transport.dart';
 
+List<String> csrfRequired = ['DELETE', 'PATCH', 'POST', 'PUT'];
+
 /// An interceptor that handles one form of protection against
 /// Cross-Site Request Forgery by setting a CSRF token in a header
 /// on every outgoing request and by updating the current CSRF token
@@ -58,7 +60,11 @@ class CsrfInterceptor extends Interceptor {
   Future<Context> onOutgoing(Provider provider, Context context) async {
     // Inject CSRF token into headers.
     if (context is HttpContext) {
-      if (!context.request.headers.containsKey(_header)) {
+      if (context.request.headers.containsKey(_header)) {
+        if (context.request.headers[_header] == null) {
+          throw new ArgumentError('CSRF header value can not be null');
+        }
+      } else if (csrfRequired.contains(context.method)) {
         context.request.headers[_header] = token;
       }
     }
