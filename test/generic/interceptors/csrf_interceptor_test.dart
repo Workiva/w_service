@@ -33,7 +33,7 @@ void main() {
 
       setUp(() {
         headers = {};
-        context = httpContextFactory('GET');
+        context = httpContextFactory('PUT');
         context.request = new MockWRequest();
         context.response = new MockWResponse();
         when(context.request.headers).thenReturn(headers);
@@ -48,6 +48,7 @@ void main() {
         expect(
             await interceptor.onOutgoing(provider, context), equals(context));
         expect(headers['x-xsrf-token'], equals('token'));
+        expect(context.request.headers.containsKey('x-xsrf-token'), isTrue);
       });
 
       test('should use `x-xsrf-token` as the default CSRF header', () async {
@@ -99,6 +100,29 @@ void main() {
         expect(
             await interceptor.onIncoming(provider, context), equals(context));
         expect(interceptor.token, equals('token'));
+      });
+
+      test(
+          'should throw an argument error if interceptor encounters a null token value in `onOutgoing`',
+          () async {
+        headers = {'x-xsrf-token': null};
+        when(context.request.headers).thenReturn(headers);
+        interceptor = new CsrfInterceptor();
+        Object exception = await expectThrowsAsync(() async {
+          await interceptor.onOutgoing(provider, context);
+        });
+        expect(exception is ArgumentError, isTrue);
+      });
+
+      test('should remove csrf header if not necessary', () async {
+        context = httpContextFactory('GET');
+        context.request = new MockWRequest();
+        context.response = new MockWResponse();
+        when(context.request.headers).thenReturn(headers);
+        when(context.response.headers).thenReturn(headers);
+        interceptor = new CsrfInterceptor();
+        await interceptor.onOutgoing(provider, context);
+        expect(context.request.headers.containsKey('x-xsrf-token'), isFalse);
       });
     });
   });
