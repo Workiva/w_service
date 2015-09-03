@@ -10,7 +10,6 @@ The `w_service` package provides a data transport layer that makes message prepa
 
 `w_service` does **not** directly interact with data transport protocols like HTTP and WebSocket. It utilizes [`w_transport`](https://github.com/Workiva/w_transport) - a platform-agnostic library with ready to use transport classes for sending and receiving data.
 
-<br>
 
 
 ## Why?
@@ -19,7 +18,6 @@ Creating a service API often starts out with a simple interface between client a
 
 `w_service`'s goal is to provide you with classes and patterns designed with these ideas in mind so you can scale your service tier to handle comprehensive use cases while eliminating unnecessary complexity.
 
-<br>
 
 
 ## How?
@@ -30,7 +28,6 @@ This is accomplished through the use of **Providers**, **Interceptors**, and an 
 
 For more detailed information on these concepts, check out the [w_service wiki](https://github.com/Workiva/w_service/wiki).
 
-<br>
 
 
 ## Platform Agnostic
