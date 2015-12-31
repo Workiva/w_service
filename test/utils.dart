@@ -25,8 +25,9 @@ Future<Object> expectThrowsAsync(Future f(), [Matcher throwsMatcher]) async {
   } catch (e) {
     exception = e;
   }
-  if (exception == null) throw new Exception(
-      'Expected function to throw asynchronously, but did not.');
+  if (exception == null)
+    throw new Exception(
+        'Expected function to throw asynchronously, but did not.');
   if (throwsMatcher != null) {
     expect(exception, throwsMatcher);
   }

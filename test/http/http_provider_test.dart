@@ -653,8 +653,8 @@ void main() {
         provider.autoRetry();
         provider.use(new CustomTestInterceptor(
             onIncoming: (HttpProvider provider, HttpContext context) {
-          if (context.response.status >= 200 &&
-              context.response.status < 300) return context;
+          if (context.response.status >= 200 && context.response.status < 300)
+            return context;
           throw new Exception(
               'Request failed: ${context.response.status} ${context.response.statusText}');
         }));
@@ -684,8 +684,8 @@ void main() {
         provider.autoRetry();
         provider.use(new CustomTestInterceptor(
             onIncoming: (HttpProvider provider, HttpContext context) {
-          if (context.response.status >= 200 &&
-              context.response.status < 300) return context;
+          if (context.response.status >= 200 && context.response.status < 300)
+            return context;
           throw new Exception(
               'Request failed: ${context.response.status} ${context.response.statusText}');
         }));

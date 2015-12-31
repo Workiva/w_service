@@ -85,7 +85,8 @@ class HttpProvider extends Provider with FluriMixin {
 
   /// Test function that helps determine whether or not a failed
   /// request is retryable.
-  Function _retryWhen = (HttpContext context) => context.retryable ||
+  Function _retryWhen = (HttpContext context) =>
+      context.retryable ||
       (context.response != null &&
           [500, 502].contains(context.response.status));
 
@@ -260,8 +261,9 @@ class HttpProvider extends Provider with FluriMixin {
   HttpFuture<WResponse> _send(String method,
       {Object data, Map<String, String> headers, Uri uri}) {
     Uri reqUri = uri != null ? uri : this.uri;
-    if (reqUri == null || reqUri.toString() == '') throw new StateError(
-        'HttpProvider: Cannot send a request without a URI.');
+    if (reqUri == null || reqUri.toString() == '')
+      throw new StateError(
+          'HttpProvider: Cannot send a request without a URI.');
 
     // If this is a retry, there will be a previous request stored in the meta.
     HttpContext previousAttempt =

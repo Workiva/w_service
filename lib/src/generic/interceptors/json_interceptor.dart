@@ -51,8 +51,8 @@ class JsonInterceptor extends Interceptor {
       // bail so that we don't overwrite or conflict with
       // another similar process.
       if (context.request.headers.containsKey('content-type') &&
-          context.request.headers['content-type'] !=
-              'application/json') return context;
+          context.request.headers['content-type'] != 'application/json')
+        return context;
 
       context.request.headers['content-type'] = 'application/json';
       if (context.request.data != null && context.request.data is! String) {

@@ -28,8 +28,8 @@ class Diagnostics {
   Map<Provider, ProviderDiagnostics> providerDiagnostics = {};
 
   Map<Context, Completer> _pending = {};
-  StreamController<
-      List<ProviderDiagnostics>> _providerDiagnosticsStreamController;
+  StreamController<List<ProviderDiagnostics>>
+      _providerDiagnosticsStreamController;
   Stream<List<ProviderDiagnostics>> _providerDiagnosticsStream;
 
   Diagnostics() {
