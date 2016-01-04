@@ -172,8 +172,8 @@ class _Message extends react.Component {
                 react.tr({}, react.td({}, react.strong({}, 'request'))),
                 react.tr({},
                     [react.td({}, 'headers:'), react.td({}, requestHeaders)]),
-                react.tr(
-                    {}, [react.td({}, 'body:'), react.td({}, requestBody)]),
+                react
+                    .tr({}, [react.td({}, 'body:'), react.td({}, requestBody)]),
                 react.tr({}, react.td({}, react.strong({}, 'response'))),
                 react.tr({},
                     [react.td({}, 'headers:'), react.td({}, responseHeaders)]),

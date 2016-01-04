@@ -1,5 +1,8 @@
 # w_service
-[![Pub](https://img.shields.io/pub/v/w_service.svg)](https://pub.dartlang.org/packages/w_service) [![Build Status](https://travis-ci.org/Workiva/w_service.svg?branch=master)](https://travis-ci.org/Workiva/w_service) [![codecov.io](http://codecov.io/github/Workiva/w_service/coverage.svg?branch=master)](http://codecov.io/github/Workiva/w_service?branch=master)
+[![Pub](https://img.shields.io/pub/v/w_service.svg)](https://pub.dartlang.org/packages/w_service)
+[![Build Status](https://travis-ci.org/Workiva/w_service.svg?branch=master)](https://travis-ci.org/Workiva/w_service)
+[![codecov.io](http://codecov.io/github/Workiva/w_service/coverage.svg?branch=master)](http://codecov.io/github/Workiva/w_service?branch=master)
+[![documentation](https://img.shields.io/badge/Documentation-w_service-blue.svg)](https://www.dartdocs.org/documentation/w_service/latest/)
 
 > Platform agnostic library for sending and receiving data messages between an application and a server with the ability to shape traffic and transform data through the use of message interceptors.
 
