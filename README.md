@@ -4,6 +4,15 @@
 [![codecov.io](http://codecov.io/github/Workiva/w_service/coverage.svg?branch=master)](http://codecov.io/github/Workiva/w_service?branch=master)
 [![documentation](https://img.shields.io/badge/Documentation-w_service-blue.svg)](https://www.dartdocs.org/documentation/w_service/latest/)
 
+---
+
+# DEPRECATED
+
+**This library has been deprecated in favor of [w_transport](https://github.com/Workiva/w_transport).** All of the functionality provided by this library has been covered by `w_transport`.
+
+---
+
+
 > Platform agnostic library for sending and receiving data messages between an application and a server with the ability to shape traffic and transform data through the use of message interceptors.
 
 
