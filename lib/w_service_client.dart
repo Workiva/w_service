@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /// Configure w_service for the browser.
-@Deprecated('Use the w_transport package instead - https://github.com/Workiva/w_transport')
+@Deprecated(
+    'Use the w_transport package instead - https://github.com/Workiva/w_transport')
 library w_service.w_service_client;
 
 import 'package:w_transport/w_transport_client.dart'

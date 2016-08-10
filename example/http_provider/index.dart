@@ -46,8 +46,10 @@ class AppComponent extends react.Component {
     return react.div({
       'className': 'container-wide'
     }, [
-      react.h1(
-          {}, [react.span({}, 'Example: '), react.code({}, 'HttpProvider'),]),
+      react.h1({}, [
+        react.span({}, 'Example: '),
+        react.code({}, 'HttpProvider'),
+      ]),
       react.div({
         'className': 'row'
       }, [
