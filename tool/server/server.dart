@@ -26,8 +26,17 @@ String generateCsrfToken() {
 
 void handleRequest(HttpRequest request) {
   request.response.headers.set('Access-Control-Allow-Origin', '*');
-  request.response.headers.set('Access-Control-Allow-Methods',
-      ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT',].join(','));
+  request.response.headers.set(
+      'Access-Control-Allow-Methods',
+      [
+        'DELETE',
+        'GET',
+        'HEAD',
+        'OPTIONS',
+        'PATCH',
+        'POST',
+        'PUT',
+      ].join(','));
   if (request.headers.value('Access-Control-Request-Headers') != null) {
     request.response.headers.set('Access-Control-Allow-Headers',
         request.headers.value('Access-Control-Request-Headers'));

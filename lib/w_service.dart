@@ -15,6 +15,8 @@
 /// Platform agnostic library for sending and receiving data messages
 /// between an application and a server with the ability to shape
 /// traffic and transform data through the use of message interceptors.
+@Deprecated(
+    'Use the w_transport package instead - https://github.com/Workiva/w_transport')
 library w_service;
 
 // w_transport classes.

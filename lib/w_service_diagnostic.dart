@@ -11,7 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+@Deprecated(
+    'Use the w_transport package instead - https://github.com/Workiva/w_transport')
 library w_service.w_service_diagnostic;
 
 import 'dart:html';

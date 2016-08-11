@@ -89,6 +89,7 @@ void main() {
         aborted = true;
         error = e;
       }
+
       HttpFuture httpFuture =
           httpFutureFactory(new Future.value(), onAbort, null, null);
       httpFuture.abort('error');
